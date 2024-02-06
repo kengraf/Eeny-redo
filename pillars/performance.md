@@ -44,7 +44,8 @@ Optimize the apigatewayv2 is preferred over apigateway because of lower cost and
 aws apigatewayv2 create-api --name 'EenyMeenyMinyMoe2' --protocol-type=HTTP \
     --tags Key=Owner,Value=Eeny \
     --target arn:aws:lambda:us-east-2:788715698479:function:EenyMeenyMinyMoe
-    
+aws apigatewayv2  create-domain-name --domain-name "eeny.cyber-unh.org" --domain-name-configurations CertificateArn=arn:aws:acm:us-east-2:788715698479:certificate/88eebf2a-230d-4a6d-a542-df76904bb108
+
 # Create a GET method for a Lambda-proxy integration
 ```
 APIID=`aws apigatewayv2 get-apis --output text \
