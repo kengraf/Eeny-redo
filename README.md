@@ -26,7 +26,6 @@ aws iam create-role --role-name Eeny-redo-lambda \
   
 # Attach policy for DynamoDB access to role
 aws iam put-role-policy --role-name Eeny-redo-lambda \
-    --policy-name Eeny-redo-lambda \
     --tags "Key"="Owner","Value"="Eeny-redo" \
     --policy-document file://lambda-policy.json  
 
