@@ -86,9 +86,7 @@ ARN=`aws lambda get-function --function-name Eeny-redo \
 aws apigatewayv2 create-api --name 'Eeny-redo' --protocol-type=HTTP \
     --tags Key="Owner",Value="Eeny-redo" \
     --target $ARN
-```
 
-```
 # Create a GET method for a Lambda-proxy integration
 APIID=`aws apigatewayv2 get-apis --output text \
     --query "Items[?Name=='Eeny-redo'].ApiId" `
@@ -103,8 +101,6 @@ ARN=`aws acm list-certificates --output text \
     --query "CertificateSummaryList[?DomainName=='*.cyber-unh.org'].CertificateArn" `
 aws apigatewayv2 create-domain-name --domain-name eeny.cyber-unh.org \
     --domain-name-configurations CertificateArn=$ARN,EndpointType=REGIONAL
-APIID=`aws apigatewayv2 get-apis --output text \
-    --query "Items[?Name=='Eeny-redo'].ApiId" `
 aws apigatewayv2 create-api-mapping --api-id $APIID \
     --domain-name eeny.cyber-unh.org --stage "\$default"
 
