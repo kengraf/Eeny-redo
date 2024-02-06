@@ -86,14 +86,6 @@ ARN=`aws lambda get-function --function-name Eeny-redo \
 aws apigatewayv2 create-api --name 'Eeny-redo' --protocol-type=HTTP \
     --tags Key="Owner",Value="Eeny-redo" \
     --target $ARN
-
-# Give any API Gateway permission to invoke the Lambda
-aws lambda add-permission \
-    --function-name Eeny-redo \
-    --action lambda:InvokeFunction \
-    --statement-id AllowGateway \
-    --principal apigateway.amazonaws.com  
-
 ```
 
 ```
@@ -106,17 +98,24 @@ aws apigatewayv2 create-integration --api-id $APIID \
     --integration-uri arn:aws:lambda:us-east-2:788715698479:function:Eeny-redo \
     --payload-format-version 1.0
 
+# Create custom domain
+ARN=`aws acm list-certificates --output text \
+    --query "CertificateSummaryList[?DomainName=='*.cyber-unh.org'].CertificateArn" `
+aws apigatewayv2 create-domain-name --domain-name eeny.cyber-unh.org \
+    --domain-name-configurations CertificateArn=$ARN,EndpointType=REGIONAL
+APIID=`aws apigatewayv2 get-apis --output text \
+    --query "Items[?Name=='Eeny-redo'].ApiId" `
+aws apigatewayv2 create-api-mapping --api-id $APIID \
+    --domain-name eeny.cyber-unh.org --stage "\$default"
+
+# Need to fix the Route53 record in the UI, CLI access is not available.
 ```
-
-# Push out deployment
-aws apigateway create-deployment --rest-api-id $APIID --stage-name prod
-
 ## Run the game
 Each refresh will return a different name.
 ```
 APIID=`aws apigatewayv2 get-apis --output text \
     --query "Items[?Name=='Eeny-redo'].ApiId" `
-curl -v https://$APIID.execute-api.us-east-2.amazonaws.com/prod/
+curl -v https://$APIID.execute-api.us-east-2.amazonaws.com/
 ```
 
 ## Clean Up by removing all the resources created
@@ -140,4 +139,4 @@ aws iam delete-role --role-name Eeny-redo-lambda
 ```
 
 ## Summary
-There are still many unimplemented suggestions from the original repo.  This effort is to help the learning process, so maybe some day.  Review the content in the pillars to see what was done.
+There are still many unimplemented suggestions from the original repo.  This effort is to help the learning process, so maybe some day.  Review the content in the pillars folder to see what was done in this fork.
