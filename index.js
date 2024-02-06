@@ -10,7 +10,7 @@ exports.handler =  async (event, context) => {
   };
 
   try {
-    switch (event.path) {
+    switch (event.rawPath) {
       case "/":
         var result = await dynamo.scan ({ TableName: 'EenyMeenyMinyMoe', }).promise();
         if (result.Count == 0) {
@@ -29,7 +29,7 @@ exports.handler =  async (event, context) => {
         .catch(console.error); 
         break;
       default:
-        throw new Error(`Unsupported route: "${event.routeKey}"`);
+        throw new Error(`Unsupported route: "${event.routeKey}" event: ` + JSON.stringify(event) );
     }
   } catch (err) {
     statusCode = 400;
