@@ -65,7 +65,8 @@ ARN=`aws iam list-roles --output text \
 # Create Lambda
 zip function.zip -xi index.js
 aws lambda create-function --function-name Eeny-redo \
-    --runtime nodejs18.x --role $ARN \
+    --tags Key="Owner",Value="Eeny-redo" \
+    --runtime nodejs14.x --role $ARN \
     --zip-file fileb://function.zip \
     --handler index.handler --output text   
 
@@ -74,10 +75,41 @@ aws lambda add-permission \
     --function-name Eeny-redo \
     --action lambda:InvokeFunction \
     --statement-id AllowGateway \
-    --principal apigateway*.amazonaws.com  
+    --principal apigateway.amazonaws.com  
 
 ```
 ### API Gateway V2
+```
+# Create the Gateway
+ARN=`aws lambda get-function --function-name Eeny-redo \
+    --query Configuration.FunctionArn --output text`
+aws apigatewayv2 create-api --name 'Eeny-redo' --protocol-type=HTTP \
+    --tags Key="Owner",Value="Eeny-redo" \
+    --target $ARN
+
+# Give any API Gateway permission to invoke the Lambda
+aws lambda add-permission \
+    --function-name Eeny-redo \
+    --action lambda:InvokeFunction \
+    --statement-id AllowGateway \
+    --principal apigateway.amazonaws.com  
+
+```
+
+```
+# Create a GET method for a Lambda-proxy integration
+APIID=`aws apigatewayv2 get-apis --output text \
+    --query "Items[?Name=='Eeny-redo'].ApiId" `
+    
+aws apigatewayv2 create-integration --api-id $APIID \
+    --integration-type AWS_PROXY \
+    --integration-uri arn:aws:lambda:us-east-2:788715698479:function:Eeny-redo \
+    --payload-format-version 1.0
+
+```
+
+# Push out deployment
+aws apigateway create-deployment --rest-api-id $APIID --stage-name prod
 
 ## Run the game
 Each refresh will return a different name.
@@ -108,43 +140,4 @@ aws iam delete-role --role-name Eeny-redo-lambda
 ```
 
 ## Summary
-There are still many unimplemented suggestions from the original repo.  This effort is to help the learning process, so maybe some day.
-
-
-============================= snip =======================================
-
-### API Gateway
-```
-# Create the Gateway
-aws apigateway create-rest-api --name 'EenyMeenyMinyMoe' \
-    --endpoint-configuration types=REGIONAL
-```
-
-```
-# Create a GET method for a Lambda-proxy integration
-APIID=`aws apigateway get-rest-apis --output text \
-    --query "items[?name=='EenyMeenyMinyMoe'].id" `
-PARENTID=`aws apigateway get-resources --rest-api-id $APIID \
-    --query 'items[0].id' --output text`
-aws apigateway put-method --rest-api-id $APIID \
-    --resource-id $PARENTID --http-method GET \
-    --authorization-type "NONE"
-            
-# Create integration with Lambda
-ARN=`aws lambda get-function --function-name EenyMeenyMinyMoe \
-    --query Configuration.FunctionArn --output text`
-REGION=`aws ec2 describe-availability-zones --output text \
-    --query 'AvailabilityZones[0].[RegionName]'`
-URI='arn:aws:apigateway:'$REGION':lambda:path/2015-03-31/functions/'$ARN'/invocations'
-aws apigateway put-integration --rest-api-id $APIID \
-   --resource-id $PARENTID --http-method GET --type AWS_PROXY \
-   --integration-http-method POST --uri $URI
-aws apigateway put-integration-response --rest-api-id $APIID \
-    --resource-id $PARENTID --http-method GET \
-    --status-code 200 --selection-pattern "" 
-
-# Push out deployment
-aws apigateway create-deployment --rest-api-id $APIID --stage-name prod
-```
-
-
+There are still many unimplemented suggestions from the original repo.  This effort is to help the learning process, so maybe some day.  Review the content in the pillars to see what was done.
