@@ -1,19 +1,34 @@
-# Eeny-meeny-miny-moe
-A child might use this game/process to select from a group of friends.
+# Eeny-redo
 
-This example deployment for my IT718 class; leverages a database tier (AWS DynamoDB), application (Lambda), and web front end (API Gateway).  
+This is a fork of kengraf/eeny-meeny-miny-moe.  
+This repo demonstrates of the simple things that can be implemented to to improve the overall architecture of the original repo.
+The improvements are motivated by AWS's Well-Architected service.  Details of each improvement are the pillars folder.
 
-We are using this repo to learn about a basic Cloud deployment using the AWS CLI. 
- Clone this repo and use the Cloud shell to issue the commands.
+CloudFormation, or alternative, would certainly makes sense is this was for production.  For now we still using the CLI.
+
+Clone this repo and use the Cloud shell to issue the commands.
 ```
-git clone https://github.com/kengraf/Eeny-meeny-miny-moe.git
-cd Eeny-meeny-miny-moe
+git clone https://github.com/kengraf/Eeny-redo.git
+cd Eeny-redo
 ```
 
-General game process
-1) Drop a set of "friend's names" into DynamoDB
-2) Invoke a lambda to pick a friend
-3) Repeat until you run out of friends
+## Create a Cloud Landing Zone (IAM, Database, and testing)
+
+### IAM create roles and policies
+AWS CLI requires files for packages, roles, and policies.  The example here assumes you have cloned this Github repo and are in the proper working directory
+
+```
+# Create role for Lambda function
+aws iam create-role --role-name Eeny-redo-lambda \
+    --assume-role-policy-document file://lambdatrole.json
+
+# Attach policy for DynamoDB access to role
+aws iam put-role-policy --role-name Eeny-redo-lambda \
+    --policy-name Eeny-redo-lambda \
+    --policy-document file://lambdapolicy.json
+ARN=`aws iam list-roles --output text \
+    --query "Roles[?RoleName=='Eeny-redo-lambda'].Arn" `
+```
 
 ### DynamoDB: used to store your friends
 ```
@@ -38,22 +53,43 @@ done
 
 ```
 
-### Lambda: used to select a friend
-AWS CLI to create a Lambda function require files for packages, roles, and policies.  The example here assumes you have cloned this Github repo and are in the proper working directory
 
+## Create the app
+Lambda and API gateway
+
+## Run the app
+
+## Clean Up by removing all the resources created
 ```
-# Create role for Lambda function
-aws iam create-role --role-name EenyMeenyMinyMoe \
-    --assume-role-policy-document file://lambdatrustpolicy.json
+# Delete API Gateway
+APIID=`aws apigatewayv2 get-apis --output text \
+    --query "Items[?Name=='Eeny-redo'].ApiId" `
+aws apigatewayv2 delete-api --api-id $APIID
+
+# Delete Lambda function
+aws lambda delete-function --function-name Eeny-redo
+
+# Delete DynamoDB table
+aws dynamodb delete-table --table-name Eeny-redo
+
+# Delete Role and Policy
+aws iam delete-role-policy --role-name Eeny-redo \
+    --policy-name Eeny-redo
+aws iam delete-role --role-name Eeny-redo 
 ```
-```
-# Attach policy for DynamoDB access to role
-aws iam put-role-policy --role-name EenyMeenyMinyMoe \
-    --policy-name EenyMeenyMinyMoe \
-    --policy-document file://lambdapolicy.json
-ARN=`aws iam list-roles --output text \
-    --query "Roles[?RoleName=='EenyMeenyMinyMoe'].Arn" `
-```
+
+## Summary
+There are still many unimplemented suggestions from the original repo.  This effort is to help the learning process, so maybe some day.
+
+
+============================= snip =======================================
+General game process
+1) Drop a set of "friend's names" into DynamoDB
+2) Invoke a lambda to pick a friend
+3) Repeat until you run out of friends
+
+
+### Lambda: used to select a friend
 ```
 # Create Lambda
 zip function.zip -xi index.js
@@ -109,41 +145,4 @@ aws apigateway create-deployment --rest-api-id $APIID --stage-name prod
 ```
 curl -v https://$APIID.execute-api.us-east-2.amazonaws.com/prod/
 ```
-
-### Clean Up by removing all the resources created
-```
-# Delete API Gateway
-APIID=`aws apigateway get-rest-apis --output text \
-    --query "items[?name=='EenyMeenyMinyMoe'].id" `
-aws apigateway delete-rest-api --rest-api-id $APIID
-
-# Delete Lambda function
-aws lambda delete-function --function-name EenyMeenyMinyMoe
-
-# Delete DynamoDB table
-aws dynamodb delete-table --table-name EenyMeenyMinyMoe
-
-# Delete Role and Policy
-aws iam delete-role-policy --role-name EenyMeenyMinyMoe \
-    --policy-name EenyMeenyMinyMoe
-aws iam delete-role --role-name EenyMeenyMinyMoe 
-```
-
-### Project behaviors suggestions for a passing grade
-- Single button for deploy, takedown, reset  
-- Resource tagging  
-- Error handling
-- Fixed disjointed and poorly named IAM resources
-- Monitoring and alerts (all 3 tiers)  
-- Add authorization to the API using Cognito   
-- Use Route53 to provide a friendly domain name for the APIGateway  
-- Expand the API to allow adding and removing names  
-
-### Project suggestions for Well-Architected at scale
-*Security:* A role needs to be defined to manage all IAM requests.  
-*Reliability:* Implement parallel and/or multi-region deployments.  
-*Performance:* When adding a couple dozen new user names a 10 second was observed.  This should be investigated.  
-*Cost Optimization:*  No real idea of what loads are for 1M users.  Should build out a smaller test for 1K users (staying within free tier) and extrapolate.  
-*Operation Excellence:*  Tagging, IAM controls, improve this repo.  
-
 
