@@ -56,10 +56,36 @@ done
 ```
 
 
-## Create the app
-Lambda and API gateway
+## Create the app (Lambda and API gateway)
+### Lambda: used to select a friend
+```
+ARN=`aws iam list-roles --output text \
+    --query "Roles[?RoleName=='Eeny-redo-lambda'].Arn" `  
 
-## Run the app
+# Create Lambda
+zip function.zip -xi index.js
+aws lambda create-function --function-name Eeny-redo \
+    --runtime nodejs18.x --role $ARN \
+    --zip-file fileb://function.zip \
+    --handler index.handler --output text   
+
+# Give any API Gateway permission to invoke the Lambda
+aws lambda add-permission \
+    --function-name Eeny-redo \
+    --action lambda:InvokeFunction \
+    --statement-id AllowGateway \
+    --principal apigateway*.amazonaws.com  
+
+```
+### API Gateway V2
+
+## Run the game
+Each refresh will return a different name.
+```
+APIID=`aws apigatewayv2 get-apis --output text \
+    --query "Items[?Name=='Eeny-redo'].ApiId" `
+curl -v https://$APIID.execute-api.us-east-2.amazonaws.com/prod/
+```
 
 ## Clean Up by removing all the resources created
 ```
@@ -86,32 +112,6 @@ There are still many unimplemented suggestions from the original repo.  This eff
 
 
 ============================= snip =======================================
-General game process
-1) Drop a set of "friend's names" into DynamoDB
-2) Invoke a lambda to pick a friend
-3) Repeat until you run out of friends
-
-
-### Lambda: used to select a friend
-```
-ARN=`aws iam list-roles --output text \
-    --query "Roles[?RoleName=='Eeny-redo-lambda'].Arn" `
-
-# Create Lambda
-zip function.zip -xi index.js
-aws lambda create-function --function-name EenyMeenyMinyMoe \
-    --runtime nodejs14.x --role $ARN \
-    --zip-file fileb://function.zip \
-    --runtime nodejs14.x --handler index.handler
-```
-```
-# Give the API Gateway permission to invoke the Lambda
-aws lambda add-permission \
-    --function-name EenyMeenyMinyMoe \
-    --action lambda:InvokeFunction \
-    --statement-id AllowGateway \
-    --principal apigateway*.amazonaws.com
-```
 
 ### API Gateway
 ```
@@ -147,8 +147,4 @@ aws apigateway put-integration-response --rest-api-id $APIID \
 aws apigateway create-deployment --rest-api-id $APIID --stage-name prod
 ```
 
-### Run the game.  Each refresh will return a different name.
-```
-curl -v https://$APIID.execute-api.us-east-2.amazonaws.com/prod/
-```
 
