@@ -12,7 +12,7 @@ exports.handler =  async (event, context) => {
   try {
     switch (event.rawPath) {
       case "/":
-        var result = await dynamo.scan ({ TableName: 'EenyMeenyMinyMoe', }).promise();
+        var result = await dynamo.scan ({ TableName: 'Eeny-redo', }).promise();
         if (result.Count == 0) {
             body = "Game Over";
             break;
@@ -20,7 +20,7 @@ exports.handler =  async (event, context) => {
         var picked = Math.floor(Math.random() * result.Count);
         body = result.Items[picked].Name;
         await dynamo.delete({
-          TableName: "EenyMeenyMinyMoe",
+          TableName: "Eeny-redo",
           Key: { Name: body },
           ReturnValues: 'ALL_OLD',
          })
