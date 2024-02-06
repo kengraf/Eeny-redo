@@ -13,7 +13,7 @@
         {
             "Effect": "Allow",
             "Action": [
-                "dynamodb:Eeny-redo*"
+                "dynamodb:Eeny*"
             ],
             "Resource": "*"
         }
