@@ -15,7 +15,7 @@
             "Action": [
                 "dynamodb:*"
             ],
-            "Resource": "*Eeny-redo*"
+            "Resource": "arn:aws:dynamodb:us-east-2:788715698479:table/Eeny-redo"
         }
     ]
 }
