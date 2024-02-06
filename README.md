@@ -20,14 +20,15 @@ AWS CLI requires files for packages, roles, and policies.  The example here assu
 ```
 # Create role for Lambda function
 aws iam create-role --role-name Eeny-redo-lambda \
-    --assume-role-policy-document file://lambdatrole.json
+    --assume-role-policy-document file://lambda-role.json
 
 # Attach policy for DynamoDB access to role
 aws iam put-role-policy --role-name Eeny-redo-lambda \
     --policy-name Eeny-redo-lambda \
-    --policy-document file://lambdapolicy.json
+    --policy-document file://lambda-policy.json
 ARN=`aws iam list-roles --output text \
     --query "Roles[?RoleName=='Eeny-redo-lambda'].Arn" `
+  
 ```
 
 ### DynamoDB: used to store your friends
@@ -38,7 +39,7 @@ aws dynamodb create-table \
     --attribute-definitions AttributeName=Name,AttributeType=S  \
     --key-schema AttributeName=Name,KeyType=HASH  \
     --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5
-    
+      
 ```
     
 ```
