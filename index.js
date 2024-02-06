@@ -33,7 +33,7 @@ exports.handler =  async (event, context) => {
     }
   } catch (err) {
     statusCode = 400;
-    body = JSON.stringify(err.message);
+    body = "Lambda error: " + JSON.stringify(err.message);
   }
 
   return {
