@@ -13,9 +13,9 @@
         {
             "Effect": "Allow",
             "Action": [
-                "dynamodb:Eeny*"
+                "dynamodb:*"
             ],
-            "Resource": "*"
+            "Resource": "*Eeny-redo*"
         }
     ]
 }
