@@ -20,35 +20,36 @@ AWS CLI requires files for packages, roles, and policies.  The example here assu
 ```
 # Create role for Lambda function
 aws iam create-role --role-name Eeny-redo-lambda \
-    --assume-role-policy-document file://lambda-role.json
+    --tags "Key"="Owner","Value"="Eeny-redo" \
+    --assume-role-policy-document file://lambda-role.json  
 
 # Attach policy for DynamoDB access to role
 aws iam put-role-policy --role-name Eeny-redo-lambda \
     --policy-name Eeny-redo-lambda \
-    --policy-document file://lambda-policy.json
-ARN=`aws iam list-roles --output text \
-    --query "Roles[?RoleName=='Eeny-redo-lambda'].Arn" `
+    --tags "Key"="Owner","Value"="Eeny-redo" \
+    --policy-document file://lambda-policy.json  
   
 ```
 
-### DynamoDB: used to store your friends
+### DynamoDB: used to store your friend\'s names for the game 
+Create a new table named *Eeny-redo*
 ```
-# Create a new table named `EenyMeenyMinyMoe`
 aws dynamodb create-table \
-    --table-name EenyMeenyMinyMoe \
+    --table-name Eeny-redo \
+    --tags "Key"="Owner","Value"="Eeny-redo" \
     --attribute-definitions AttributeName=Name,AttributeType=S  \
     --key-schema AttributeName=Name,KeyType=HASH  \
-    --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5
+    --billing-mode PAY_PER_REQUEST  
       
 ```
-    
+   
 ```
 # Add friend records for testing.  
 friends=("Alice" "Bob" "Charlie")
 for i in "${friends[@]}"
 do
    : 
-  aws dynamodb put-item --table-name EenyMeenyMinyMoe --item \
+  aws dynamodb put-item --table-name Eeny-redo --item \
     '{ "Name": {"S": "'$i'"} }' 
 done
 
@@ -74,9 +75,10 @@ aws lambda delete-function --function-name Eeny-redo
 aws dynamodb delete-table --table-name Eeny-redo
 
 # Delete Role and Policy
-aws iam delete-role-policy --role-name Eeny-redo \
-    --policy-name Eeny-redo
-aws iam delete-role --role-name Eeny-redo 
+aws iam delete-role-policy --role-name Eeny-redo-lambda \
+    --policy-name Eeny-redo-lambda
+aws iam delete-role --role-name Eeny-redo-lambda
+  
 ```
 
 ## Summary
@@ -92,6 +94,9 @@ General game process
 
 ### Lambda: used to select a friend
 ```
+ARN=`aws iam list-roles --output text \
+    --query "Roles[?RoleName=='Eeny-redo-lambda'].Arn" `
+
 # Create Lambda
 zip function.zip -xi index.js
 aws lambda create-function --function-name EenyMeenyMinyMoe \
