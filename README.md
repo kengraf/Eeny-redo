@@ -22,13 +22,12 @@ AWS CLI requires files for packages, roles, and policies.  The example here assu
 aws iam create-role --role-name Eeny-redo-lambda \
     --tags "Key"="Owner","Value"="Eeny-redo" \
     --assume-role-policy-document file://lambda-role.json  
-
 # Attach policy for DynamoDB access to role
 aws iam put-role-policy --role-name Eeny-redo-lambda \
     --policy-name Eeny-redo-lambda \
     --tags "Key"="Owner","Value"="Eeny-redo" \
     --policy-document file://lambda-policy.json  
-  
+
 ```
 
 ### DynamoDB: used to store your friend\'s names for the game 
