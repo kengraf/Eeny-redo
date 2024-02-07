@@ -98,6 +98,7 @@ aws apigatewayv2 create-api-mapping --api-id $APIID --output text \
     --domain-name eeny.cyber-unh.org --stage "\$default"
 
 # Need to fix the Route53 record in the UI, CLI access is not available.
+Needed is the domain name of the mapping not the gateway\'s domain.
 ```
 ## Run the game
 ### Load some friends
