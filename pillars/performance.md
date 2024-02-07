@@ -9,8 +9,8 @@ The example uses K6.
  
 K6 install on AWS linux
 ```
-sudo dnf install https://dl.k6.io/rpm/repo.rpm
-sudo dnf install k6
+sudo dnf -y install https://dl.k6.io/rpm/repo.rpm
+sudo dnf -y install k6
 ```
 
 Sample test.js running one stage with 100 requests.
@@ -31,7 +31,7 @@ export default function() {
 
 Run the test
 ```
-k6 test.js
+k6 run test.js
 ```
 ### Adding a batch of records to the database when needed
 
