@@ -1,8 +1,8 @@
-# Two suggestions to support Performance pllar in Eeny-meeny-miny-moe app
+# Two suggestions to support Performance pillar in Eeny-meeny-miny-moe app
 1) Measure overall efficiency
 2) Optimize serverless deployment
         
-### Measure overall efficiency
+## Measure overall efficiency
 Add a load generation process to eval response times.  
 Good stress testing recomendations [here](https://www.inmotionhosting.com/support/server/server-usage/how-to-stress-test-your-website/).  
 The example uses K6.
@@ -23,7 +23,7 @@ export let options = {
         ],
 };
 export default function() {
-        let res = http.get('https://example.com');
+        let res = http.get('https://eeny.cyber-unh.org');
         check(res, { 'status was 200': r => r.status == 200 });
         sleep(1);
 }
@@ -33,53 +33,66 @@ Run the test
 ```
 k6 test.js
 ```
-### Optimize serverless deployment
-use load testing to generate data on various lambda sizes
-128Mb average was 506 mSec yielding 0.0625 GbSeconds per request.  
-512Mb average was 102 mSec yielding *0.051* GbSeconds per request.  
-1024Mb average was 70 mSec yielding 0.07 GbSeconds per request.  
+### Adding a batch of records to the database when needed
 
-Optimize the apigatewayv2 is preferred over apigateway because of lower cost and significant preformance improvements.  
-
-aws apigatewayv2 create-api --name 'EenyMeenyMinyMoe2' --protocol-type=HTTP \
-    --tags Key=Owner,Value=Eeny \
-    --target arn:aws:lambda:us-east-2:788715698479:function:EenyMeenyMinyMoe
-aws apigatewayv2  create-domain-name --domain-name "eeny.cyber-unh.org" --domain-name-configurations CertificateArn=arn:aws:acm:us-east-2:788715698479:certificate/88eebf2a-230d-4a6d-a542-df76904bb108
-
-# Create a GET method for a Lambda-proxy integration
 ```
-APIID=`aws apigatewayv2 get-apis --output text \
-    --query "Items[?Name=='EenyMeenyMinyMoe2'].ApiId" `
-    
-aws apigatewayv2 create-integration --api-id $APIID \
-    --integration-type AWS_PROXY \
-    --integration-uri arn:aws:lambda:us-east-2:788715698479:function:EenyMeenyMinyMoe \
-    --payload-format-version 1.0
+#!/bin/bash
 
-aws apigatewayv2 create-route \
-  --api-id $APIID --route-key 'GET /test' \
-  --target integrations/6txtqgu
-  
--------------------------
-PARENTID=`aws apigatewayv2 get-resources --api-id $APIID \
-    --query 'items[0].id' --output text`
-aws apigatewayv2 put-method --rest-api-id $APIID \
-    --resource-id $PARENTID --http-method GET \
-    --authorization-type "NONE"
-```            
-# Create integration with Lambda
+# Specify the file name
+file="fake-name-batch.json"
+
+# Clear the file if it exists
+> "$file"
+
+# Define the number of strings to generate
+num_strings=10
+
+# Loop to generate and write numbered strings to the file
+for ((i=1; i<=$num_strings; i++)); do
+    echo "String $i" >> "$file"
+done
+
+echo "Numbered strings have been written to '$file'."
 ```
---query Configuration.FunctionArn --output text`
-REGION=`aws ec2 describe-availability-zones --output text \
-    --query 'AvailabilityZones[0].[RegionName]'`
-URI='arn:aws:apigateway:'$REGION':lambda:path/2015-03-31/functions/'$ARN'/invocations'
-aws apigateway put-integration --rest-api-id $APIID \
-   --resource-id $PARENTID --http-method GET --type AWS_PROXY \
-   --integration-http-method POST --uri $URI
-aws apigateway put-integration-response --rest-api-id $APIID \
-    --resource-id $PARENTID --http-method GET \
-    --status-code 200 --selection-pattern "" 
+FYI: DynamoDB limits adds to 25 records in a sinlge batch
+
+# The contents of add10.json
 ```
-# Push out deployment
-aws apigatewayv2 create-stage --api-id $APIID --stage-name prod --auto-deploy
-aws apigatewayv2 create-deployment --api-id $APIID --stage-name prod
+{
+  "Eeny-redo": [
+      { "PutRequest": { "Item": { "Name": { "S": "alice00" }}}},
+      { "PutRequest": { "Item": { "Name": { "S": "alice01" }}}},
+      { "PutRequest": { "Item": { "Name": { "S": "alice02" }}}},
+      { "PutRequest": { "Item": { "Name": { "S": "alice03" }}}},
+      { "PutRequest": { "Item": { "Name": { "S": "alice04" }}}},
+      { "PutRequest": { "Item": { "Name": { "S": "alice05" }}}},
+      { "PutRequest": { "Item": { "Name": { "S": "alice06" }}}},
+      { "PutRequest": { "Item": { "Name": { "S": "alice07" }}}},
+      { "PutRequest": { "Item": { "Name": { "S": "alice08" }}}},
+      { "PutRequest": { "Item": { "Name": { "S": "alice09" }}}}
+  ]
+}
+
+```
+Add one batch of 10
+```
+aws dynamodb batch-write-item --request-items file://add10.json  
+```
+
+
+## Optimize serverless deployment
+Using the load load testing to generate data on various lambda sizes.
+Evaluation was done by via the Lambda console monitoring tools.
+| Lambda size (Mb)  | Runtime (MSec)  | GbSeconds used |
+| :---: | :---: | :---: |
+|  128    |   506    |   0.0625  |
+|  512    |    92    |  **_0.0460_**  |
+|  1024   |    70    |   0.0700  |
+
+---
+Switch the gateway to apigatewayv2
+This is preferred over the original use apigateway due to lower costs,
+significant preformance improvements, and simpler CLI commands.
+Additionally, v2 default deployments will handle lambda integrations,
+stages, auto deployments, and custom domain names.  
+

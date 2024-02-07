@@ -42,9 +42,10 @@ aws dynamodb create-table \
     --billing-mode PAY_PER_REQUEST  
       
 ```
-   
+
+# Add friend records for testing.     
+Doing this via CLI means 1 second per record processing
 ```
-# Add friend records for testing.  
 friends=("Alice" "Bob" "Charlie")
 for i in "${friends[@]}"
 do
@@ -54,7 +55,7 @@ do
 done
 
 ```
-
+### Testing
 
 ## Create the app (Lambda and API gateway)
 ### Lambda: used to select a friend
@@ -67,7 +68,7 @@ zip function.zip -xi index.js
 aws lambda create-function --function-name Eeny-redo \
     --tags Key="Owner",Value="Eeny-redo" \
     --runtime nodejs14.x --role $ARN \
-    --zip-file fileb://function.zip \
+    --zip-file fileb://function.zip --memory-size 512 \
     --handler index.handler --output text   
 
 # Give any API Gateway permission to invoke the Lambda
