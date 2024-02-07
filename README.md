@@ -118,6 +118,12 @@ curl -v https://$APIID.execute-api.us-east-2.amazonaws.com/
 ## Clean Up by removing all the resources created
 ```
 # Delete API Gateway
+MAPID=`aws apigatewayv2 get-api-mappings \
+    --domain-name eeny.cyber-unh.org  --output text \
+    --query Items[0].ApiMappingId`
+aws apigatewayv2 delete-api-mapping \
+    --api-mapping-id $MAPID --domain-name eeny.cyber-unh.org
+
 APIID=`aws apigatewayv2 get-apis --output text \
     --query "Items[?Name=='Eeny-redo'].ApiId" `
 aws apigatewayv2 delete-api --api-id $APIID
