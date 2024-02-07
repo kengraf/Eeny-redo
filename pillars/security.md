@@ -1,4 +1,5 @@
-# Two suggestions to support Security pillar in Eeny-meeny-miny-moe app
+# Two suggestions to support Security pillar
+# in Eeny-meeny-miny-moe app
 1) Strong Identity foundation
 2) Protect data (transit and at rest)
         
@@ -8,7 +9,7 @@ Those IAM components have been separated and are now defined as part of the orga
     
 ## Protect data (transit and at rest)
 No keys are managed externally to AWS.
-The app code is for demonstration purposes only, is public, and not considered sensitive
+The app code is for demonstration purposes only, is public, and not considered sensitive.
 The only sensitive app data is a list of friends.
 
 **At rest:** Previously the data existed as a string in a script managed on Github and
