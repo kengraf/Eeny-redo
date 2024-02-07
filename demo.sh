@@ -1,5 +1,17 @@
+#!/bin/bash
+
+# File name containing names to is only argument
+file="$1"
+
+# Array to store lines
+friends=()
+
+# Read each line of the file and populate the array
+while IFS= read -r line; do
+    lines+=("$friends")
+done < "$file"
+
 # Add friend records for testing.  
-friends=("Kabir.Bardai" "David.Blodgett" "Matthew.Cusack" "Chase.Cushman" "Theo.DiMambro" "Adam.Elsner" "Ethan.Healey" "Anuj.Joshi" "Austin.Kc" "Lauren.Kennelly" "Savannah.Malo" "Logan.McKinley" "Austin.Niles" "Diego.Pacheco.Galdeano" "Jonathan.Ross" "Joseph.Roussos" "Jack.Schneider" "Christopher.Sullivan" "Logan.White")
 for i in "${friends[@]}"
 do
         : 
