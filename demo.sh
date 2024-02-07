@@ -21,6 +21,6 @@ for i in "${friends[@]}"
 do
         : 
         echo $i
-        aws dynamodb put-item --table-name EenyMeenyMinyMoe --item \
+        aws dynamodb put-item --table-name Eeny-redo --item \
                          '{ "Name": {"S": "'$i'"} }' 
 done
