@@ -12,9 +12,9 @@ The app code is for demonstration purposes only, is public, and not considered s
 The only sensitive app data is a list of friends.
 
 **At rest:** Previously the data existed as a string in a script managed on Github and
-in the DynamnoDB database.  DynamoDB is encrypted by default.  In the Github script (demo.sh)
+in the DynamoDB database.  DynamoDB is encrypted by default.  In the Github script (demo.sh)
 the array of names was removed.  Names are now provided only at script runtime.
 
 **In transit:** Remote access to the API Gateway is only available using TLS.  Realtime
 access to the components in this app are available to properly authorized users via the console
-and CLI, intraspection of transactions is possible for those users.
+and CLI, introspection of transactions is possible for those users.
