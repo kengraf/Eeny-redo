@@ -1,7 +1,6 @@
 # Eeny-redo
-| Lambda  | Runtime  | GbSeconds |
-| size Mb | mSeconds |    used   |
-| ------- | -------- | --------- |
+| Lambda size (Mb)  | Runtime (MSec)  | GbSeconds used |
+| :---: | :---: | :---: |
 |  128    |   506    |   0.0625  |
 |  512    |    92    |  *0.0460*  |
 |  1024   |    70    |   0.0700  |
@@ -12,7 +11,8 @@
 | ------- | -------- | --------- |
 | 128 | 506 | 0.0625 |
 | 512 | 92 | *0.0460* |
-| 1024 | 70 | 0.0700 |
+| 1024 | 70 | 0.0700 |  
+
 This is a fork of kengraf/eeny-meeny-miny-moe.  
 This repo demonstrates of the simple things that can be implemented to to improve the overall architecture of the original repo.
 The improvements are motivated by AWS's Well-Architected service.  Details of each improvement are the pillars folder.
