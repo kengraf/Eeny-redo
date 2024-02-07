@@ -11,6 +11,8 @@ Clone this repo and use the Cloud shell to issue the commands.
 git clone https://github.com/kengraf/Eeny-redo.git
 cd Eeny-redo
 ```
+### Single build (all snippets)
+./build-eeny-redo.sh
 
 ## Create a Cloud Landing Zone (IAM, Database, and testing)
 
@@ -26,7 +28,7 @@ aws iam create-role --role-name Eeny-redo-lambda \
   
 # Attach policy for DynamoDB access to role
 aws iam put-role-policy --role-name Eeny-redo-lambda \
-    --policy-name Eeny-redo-lambda \
+    --policy-name Eeny-redo-lambda --output text \
     --policy-document file://lambda-policy.json  
 
 ```
@@ -35,7 +37,7 @@ aws iam put-role-policy --role-name Eeny-redo-lambda \
 Create a new table named *Eeny-redo*
 ```
 aws dynamodb create-table \
-    --table-name Eeny-redo \
+    --table-name Eeny-redo --output text \
     --tags "Key"="Owner","Value"="Eeny-redo" \
     --attribute-definitions AttributeName=Name,AttributeType=S  \
     --key-schema AttributeName=Name,KeyType=HASH  \
@@ -43,19 +45,8 @@ aws dynamodb create-table \
       
 ```
 
-# Add friend records for testing.     
-Doing this via CLI means 1 second per record processing
-```
-friends=("Alice" "Bob" "Charlie")
-for i in "${friends[@]}"
-do
-   : 
-  aws dynamodb put-item --table-name Eeny-redo --item \
-    '{ "Name": {"S": "'$i'"} }' 
-done
-
-```
 ### Testing
+Refer to pillars/performance.md
 
 ## Create the app (Lambda and API gateway)
 ### Lambda: used to select a friend
@@ -73,7 +64,7 @@ aws lambda create-function --function-name Eeny-redo \
 
 # Give any API Gateway permission to invoke the Lambda
 aws lambda add-permission \
-    --function-name Eeny-redo \
+    --function-name Eeny-redo --output text \
     --action lambda:InvokeFunction \
     --statement-id AllowGateway \
     --principal apigateway.amazonaws.com  
@@ -86,28 +77,39 @@ ARN=`aws lambda get-function --function-name Eeny-redo \
     --query Configuration.FunctionArn --output text`
 aws apigatewayv2 create-api --name 'Eeny-redo' --protocol-type=HTTP \
     --tags Key="Owner",Value="Eeny-redo" \
-    --target $ARN
+    --target $ARN --output text
 
 # Create a GET method for a Lambda-proxy integration
 APIID=`aws apigatewayv2 get-apis --output text \
     --query "Items[?Name=='Eeny-redo'].ApiId" `
     
 aws apigatewayv2 create-integration --api-id $APIID \
-    --integration-type AWS_PROXY \
+    --integration-type AWS_PROXY --output text \
     --integration-uri arn:aws:lambda:us-east-2:788715698479:function:Eeny-redo \
     --payload-format-version 1.0
 
 # Create custom domain
 ARN=`aws acm list-certificates --output text \
     --query "CertificateSummaryList[?DomainName=='*.cyber-unh.org'].CertificateArn" `
-aws apigatewayv2 create-domain-name --domain-name eeny.cyber-unh.org \
+aws apigatewayv2 create-domain-name --output text \
+    --domain-name eeny.cyber-unh.org \
     --domain-name-configurations CertificateArn=$ARN,EndpointType=REGIONAL
-aws apigatewayv2 create-api-mapping --api-id $APIID \
+aws apigatewayv2 create-api-mapping --api-id $APIID --output text \
     --domain-name eeny.cyber-unh.org --stage "\$default"
 
 # Need to fix the Route53 record in the UI, CLI access is not available.
 ```
 ## Run the game
+### Load some friends
+```
+friends=("Alice" "Bob" "Charlie")
+for i in "${friends[@]}"
+do
+   : 
+  aws dynamodb put-item --table-name Eeny-redo --item \
+    '{ "Name": {"S": "'$i'"} }' 
+done
+```
 Each refresh will return a different name.
 ```
 APIID=`aws apigatewayv2 get-apis --output text \
@@ -129,15 +131,15 @@ APIID=`aws apigatewayv2 get-apis --output text \
 aws apigatewayv2 delete-api --api-id $APIID
 
 # Delete Lambda function
-aws lambda delete-function --function-name Eeny-redo
+aws lambda delete-function --function-name Eeny-redo --output text
 
 # Delete DynamoDB table
-aws dynamodb delete-table --table-name Eeny-redo
+aws dynamodb delete-table --table-name Eeny-redo --output text
 
 # Delete Role and Policy
 aws iam delete-role-policy --role-name Eeny-redo-lambda \
-    --policy-name Eeny-redo-lambda
-aws iam delete-role --role-name Eeny-redo-lambda
+    --policy-name Eeny-redo-lambda --output text
+aws iam delete-role --role-name Eeny-redo-lambda --output text
   
 ```
 
