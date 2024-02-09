@@ -1,4 +1,4 @@
-# Two suggestions to support Performance pillar in Eeny-meeny-miny-moe app
+# Two suggestions to support Performance pillar
 1) Measure overall efficiency
 2) Optimize serverless deployment
         
