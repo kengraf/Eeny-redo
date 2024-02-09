@@ -4,58 +4,33 @@
         
 ## Measure overall efficiency
 Add a load generation process to eval response times.  
-Good stress testing recomendations [here](https://www.inmotionhosting.com/support/server/server-usage/how-to-stress-test-your-website/).  
+Good stress testing recommendations  [here](https://www.inmotionhosting.com/support/server/server-usage/how-to-stress-test-your-website/).  
 The example uses K6.
  
-K6 install on AWS linux
+K6 install on AWS Linux
 ```
-sudo dnf -y install https://dl.k6.io/rpm/repo.rpm
-sudo dnf -y install k6
-```
-
-Sample test.js running one stage with 100 requests.
-```
-import http from 'k6/http';
-import { check, sleep } from 'k6';
-export let options = {
-        stages: [
-                { duration: '20s', target: 100 },
-        ],
-};
-export default function() {
-        let res = http.get('https://eeny.cyber-unh.org');
-        check(res, { 'status was 200': r => r.status == 200 });
-        sleep(1);
-}
+sudo dnf -y install https://dl.k6.io/rpm/repo.rpm  
+sudo dnf -y install k6  
 ```
 
-Run the test
+### Adding a batch of records to the database for testing
+Example script add10x10.sh will add 100 test names iterating 10 times
+with the add10.json template.
+
+FYI: DynamoDB limits adds to 25 records in a single batch.
+
+
+add10x10.sh
 ```
-k6 run test.js
-```
-### Adding a batch of records to the database when needed
-
-```
-#!/bin/bash
-
-# Specify the file name
-file="fake-name-batch.json"
-
-# Clear the file if it exists
-> "$file"
-
-# Define the number of strings to generate
-num_strings=10
-
-# Loop to generate and write numbered strings to the file
-for ((i=1; i<=$num_strings; i++)); do
-    echo "String $i" >> "$file"
+# Add friend records for testing.  
+letters=("Alfa" "Bravo" "Charlie" "Delta" "Echo" "Foxtrot" "Golf" "Hotel" "India" "Juliett")
+for i in "${letters[@]}"
+do
+        : 
+        sed 's/alice/'$i'/g' add10.json > new10.json
+        aws dynamodb batch-write-item --request-items file://new10.json
 done
-
-echo "Numbered strings have been written to '$file'."
 ```
-FYI: DynamoDB limits adds to 25 records in a sinlge batch
-
 # The contents of add10.json
 ```
 {
@@ -72,13 +47,26 @@ FYI: DynamoDB limits adds to 25 records in a sinlge batch
       { "PutRequest": { "Item": { "Name": { "S": "alice09" }}}}
   ]
 }
-
 ```
-Add one batch of 10
+Sample test.js running one stage with 100 requests.
 ```
-aws dynamodb batch-write-item --request-items file://add10.json  
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+export let options = {
+        stages: [
+                { duration: '20s', target: 100 },
+        ],
+};
+export default function() {
+        let res = http.get('https://eeny.cyber-unh.org');
+        check(res, { 'status was 200': r => r.status == 200 });
+        sleep(1);
+}
 ```
-
+Run the test
+```
+k6 run test.js
+```
 
 ## Optimize serverless deployment
 Using the load load testing to generate data on various lambda sizes.
@@ -92,7 +80,7 @@ Evaluation was done by via the Lambda console monitoring tools.
 ---
 Switch the gateway to apigatewayv2
 This is preferred over the original use apigateway due to lower costs,
-significant preformance improvements, and simpler CLI commands.
+significant performance improvements, and simpler CLI commands.
 Additionally, v2 default deployments will handle lambda integrations,
 stages, auto deployments, and custom domain names.  
 
