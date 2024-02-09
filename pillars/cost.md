@@ -38,6 +38,6 @@ HTTP API request cost (monthly): 705.00 USD
 ###  Total monthly estimated = $26,555.56
 ---
 ## Adjust deployment code
-**DynamoDb** Dropped provisioned I/O for PAY_PER_REQUEST
-**Lambda** Changed memory size from default 128Mb to 512Mb
-**API** Changed from apigateway to apigatewayv2
+- **DynamoDb** Dropped provisioned I/O for PAY_PER_REQUEST
+- **Lambda** Changed memory size from default 128Mb to 512Mb
+- **API** Changed from apigateway to apigatewayv2
