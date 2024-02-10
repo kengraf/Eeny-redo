@@ -97,8 +97,23 @@ aws apigatewayv2 create-domain-name --output text \
 aws apigatewayv2 create-api-mapping --api-id $APIID --output text \
     --domain-name eeny.cyber-unh.org --stage "\$default"
 
-# Need to fix the Route53 record in the UI, CLI access is not available.
+# Need to fix the Route53 record.
 Needed is the domain name of the mapping not the gateway\'s domain.
+aws route53 list-resource-record-sets --hosted-zone-id ZRWFREAU725TM --query "ResourceRecordSets[?Name=='eeny.cyber-unh.org.']"
+
+ZONEID=`aws route53 list-hosted-zones-by-name --dns-name cyber-unh.org --query "HostedZones[0].Id" --output text`
+DNSNAME=`aws apigatewayv2 get-domain-names --output text --query \
+    "Items[?DomainName=='eeny.cyber-unh.org'].DomainNameConfigurations[0].ApiGatewayDomainName"`'.'
+HOSTZONE=`aws apigatewayv2 get-domain-names --output text --query \
+    "Items[?DomainName=='eeny.cyber-unh.org'].DomainNameConfigurations[0].HostedZoneId"`
+aws route53 change-resource-record-sets \
+    --hosted-zone-id $ZONEID --change-batch '{
+      "Changes": [ { "Action": "UPSERT",
+          "ResourceRecordSet": {
+            "Name": "eeny2.cyber-unh.org.", "Type": "A",
+            "AliasTarget": { "HostedZoneId": "'$HOSTZONE'",
+                "DNSName": "'$DNSNAME'" } } } ] }'
+
 ```
 ## Run the game
 ### Load some friends
