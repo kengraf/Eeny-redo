@@ -26,7 +26,7 @@ ARN=`aws iam list-roles --output text \
 zip function.zip -xi index.js
 aws lambda create-function --function-name Eeny-redo \
     --tags Key="Owner",Value="Eeny-redo" \
-    --runtime nodejs14.x --role $ARN \
+    --runtime nodejs16.x --role $ARN \
     --zip-file fileb://function.zip --memory-size 512 \
     --handler index.handler --output text   
 
