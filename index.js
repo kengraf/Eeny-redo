@@ -1,4 +1,7 @@
 const AWS = require("aws-sdk");
+const AWSXRay = require('aws-xray-sdk');
+
+AWSXRay.captureAWS(AWS);
 
 const dynamo = new AWS.DynamoDB.DocumentClient();
 
