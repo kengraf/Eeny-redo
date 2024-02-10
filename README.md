@@ -58,7 +58,7 @@ ARN=`aws iam list-roles --output text \
 zip function.zip -xi index.js
 aws lambda create-function --function-name Eeny-redo \
     --tags Key="Owner",Value="Eeny-redo" \
-    --runtime nodejs16.x --role $ARN \
+    --runtime nodejs16.x --role $ARN --tracing-config Mode=Active \
     --zip-file fileb://function.zip --memory-size 512 \
     --handler index.handler --output text   
 
@@ -153,6 +153,8 @@ aws lambda delete-function --function-name Eeny-redo --output text
 aws dynamodb delete-table --table-name Eeny-redo --output text
 
 # Delete Role and Policy
+aws iam detach-role-policy --role-name Eeny-redo-lambda \
+    --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
 aws iam delete-role-policy --role-name Eeny-redo-lambda \
     --policy-name Eeny-redo-lambda --output text
 aws iam delete-role --role-name Eeny-redo-lambda --output text
