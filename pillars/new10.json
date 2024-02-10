@@ -1,0 +1,14 @@
+{
+    "Eeny-redo": [
+      { "PutRequest": { "Item": { "Name": { "S": "Juliett00" }}}},
+      { "PutRequest": { "Item": { "Name": { "S": "Juliett01" }}}},
+      { "PutRequest": { "Item": { "Name": { "S": "Juliett02" }}}},
+      { "PutRequest": { "Item": { "Name": { "S": "Juliett03" }}}},
+      { "PutRequest": { "Item": { "Name": { "S": "Juliett04" }}}},
+      { "PutRequest": { "Item": { "Name": { "S": "Juliett05" }}}},
+      { "PutRequest": { "Item": { "Name": { "S": "Juliett06" }}}},
+      { "PutRequest": { "Item": { "Name": { "S": "Juliett07" }}}},
+      { "PutRequest": { "Item": { "Name": { "S": "Juliett08" }}}},
+      { "PutRequest": { "Item": { "Name": { "S": "Juliett09" }}}}
+  ]
+}

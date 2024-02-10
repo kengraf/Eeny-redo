@@ -1,0 +1,9 @@
+{
+    "name": "eeny-redo",
+    "version": "1.0.0",
+    "description": "AWS Lambda function",
+    "main": "index.js",
+    "dependencies": {
+        "aws-xray-sdk": "^3.1.1"
+    }
+}
