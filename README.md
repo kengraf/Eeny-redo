@@ -112,7 +112,7 @@ aws route53 change-resource-record-sets \
           "ResourceRecordSet": {
             "Name": "eeny2.cyber-unh.org.", "Type": "A",
             "AliasTarget": { "HostedZoneId": "'$HOSTZONE'",
-                "DNSName": "'$DNSNAME'" } } } ] }'
+                "DNSName": "'$DNSNAME'", "EvaluateTargetHealth": false } } } ] }'
 
 ```
 ## Run the game
