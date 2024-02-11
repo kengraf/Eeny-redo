@@ -54,7 +54,16 @@ Refer to pillars/performance.md
 ARN=`aws iam list-roles --output text \
     --query "Roles[?RoleName=='Eeny-redo-lambda'].Arn" `  
 
-# Create Lambda
+# Creat lambda to re-fill database
+aws sns create-topic --name Eeny-db-empty
+zip refill-function.zip -xi refill.js
+aws lambda create-function --function-name Eeny-redo-refill \
+    --tags Key="Owner",Value="Eeny-redo" \
+    --runtime nodejs16.x --role $ARN \
+    --zip-file fileb://refill-function.zip \
+    --handler index.handler --output text   
+
+# Create Lambda to recieve requests
 zip function.zip -xi index.js
 aws lambda create-function --function-name Eeny-redo \
     --tags Key="Owner",Value="Eeny-redo" \
