@@ -4,20 +4,24 @@
         
 ### Test recovery procedures
 mini-ChaosMonkey  
+```
+# Delete records to force an empty database
+# Get all the records
+aws dynamodb scan --table-name Eeny-redo --output text --query "Items[].Name.S" > items.txt
+sed -i 's/\t/\n/g' items.txt
+
+# Loop through the list, deleting everything
+while read -r name; do
+        echo $name
+        aws dynamodb delete-item --table-name Eeny-redo \
+                --key "{\"Name\":{\"S\":\"$name\"}}"
+done < items.txt
+
+```
 
 ###  Automatically recover from failure
-event on delete of db, rebuild.
-Use X-ray to monitor events
-Step 1: Enable tracing the lambda function
-```
-aws lambda update-function-configuration  \
-        --function-name Eeny-redo --output text \
-        --tracing-config Mode=Active
-```
-Step 2: Add trace information for request to dynamoDB
-```
-const AWS = require('aws-sdk');
-const AWSXRay = require('aws-xray-sdk');
-AWSXRay.captureAWS(AWS);
-const dynamodb = new AWS.DynamoDB();
-```
+The database needs to be refilled when empty
+The recovery process is:
+1) Eeny-redo-lambda invokes the SNS topic "Eeny-redo-db-refill" when zero records are returned
+2) The SNS topic invokes the lambda function: "Eeny-redo-db-refill"
+3) The lambda function refills the database.  The current lambda just adds a "Game Over" entry
