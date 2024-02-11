@@ -14,8 +14,20 @@ exports.handler =  async (event, context) => {
       case "/":
         var result = await dynamo.scan ({ TableName: 'Eeny-redo', }).promise();
         if (result.Count == 0) {
-            body = "Game Over";
-            break;
+          // Publish message to the specified SNS topic
+          const sns = new AWS.SNS();
+          // Parameters for publishing a message to an SNS topic
+          const data = await sns.listTopics().promise();
+          const topic = data.Topics.find(t => t.TopicArn.includes("Eeny-redo-db-refill"));
+
+          const params = {
+            Message: 'Hello from Lambda!',
+            TopicArn: topic
+          };
+          const data = await sns.publish(params).promise();
+          console.log("Message sent to SNS:", data.MessageId);
+          body = "Game Over";
+          break;
         }
         var picked = Math.floor(Math.random() * result.Count);
         body = result.Items[picked].Name;
