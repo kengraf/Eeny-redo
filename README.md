@@ -58,7 +58,7 @@ ARN=`aws iam list-roles --output text \
 zip function.zip -xi index.js
 aws lambda create-function --function-name Eeny-redo \
     --tags Key="Owner",Value="Eeny-redo" \
-    --runtime nodejs16.x --role $ARN --tracing-config Mode=Active \
+    --runtime nodejs16.x --role $ARN \
     --zip-file fileb://function.zip --memory-size 512 \
     --handler index.handler --output text   
 
@@ -112,7 +112,7 @@ aws route53 change-resource-record-sets \
           "ResourceRecordSet": {
             "Name": "eeny2.cyber-unh.org.", "Type": "A",
             "AliasTarget": { "HostedZoneId": "'$HOSTZONE'",
-                "DNSName": "'$DNSNAME'", "EvaluateTargetHealth": false } } } ] }'
+                "DNSName": "'$DNSNAME'", "EvaluateTargetHealth": false } } } ] }'  
 
 ```
 ## Run the game
@@ -125,12 +125,14 @@ do
   aws dynamodb put-item --table-name Eeny-redo --item \
     '{ "Name": {"S": "'$i'"} }' 
 done
+
 ```
 Each refresh will return a different name.
 ```
 APIID=`aws apigatewayv2 get-apis --output text \
     --query "Items[?Name=='Eeny-redo'].ApiId" `
 curl -v https://$APIID.execute-api.us-east-2.amazonaws.com/
+
 ```
 
 ## Clean Up by removing all the resources created
@@ -157,7 +159,7 @@ aws iam detach-role-policy --role-name Eeny-redo-lambda \
     --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
 aws iam delete-role-policy --role-name Eeny-redo-lambda \
     --policy-name Eeny-redo-lambda --output text
-aws iam delete-role --role-name Eeny-redo-lambda --output text
+aws iam delete-role --role-name Eeny-redo-lambda --output text  
   
 ```
 
