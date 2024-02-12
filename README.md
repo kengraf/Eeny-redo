@@ -60,7 +60,7 @@ LAMBDA_ARN=`aws lambda create-function --function-name Eeny-redo-db-refill \
     --tags Key="Owner",Value="Eeny-redo" \
     --runtime nodejs16.x --role $ARN \
     --zip-file fileb://refill-function.zip \
-    --handler index.handler --output text   
+    --handler index.handler --output text `   
 
 # Create Lambda to recieve requests
 zip function.zip -xi index.js
