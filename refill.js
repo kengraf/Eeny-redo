@@ -19,7 +19,6 @@ exports.handler = async (event) => {
             statusCode: 200,
             body: JSON.stringify('Record added successfully')
         };
-    };
   } catch (err) {
     statusCode = 400;
     body = "Lambda error: " + JSON.stringify(err.message);
