@@ -55,11 +55,11 @@ ARN=`aws iam list-roles --output text \
     --query "Roles[?RoleName=='Eeny-redo-lambda'].Arn" `  
 
 # Creat lambda to re-fill database
-zip refill-function.zip -xi refill.js
+zip refillfunction.zip -xi refill.js
 LAMBDA_ARN=`aws lambda create-function --function-name Eeny-redo-db-refill \
     --tags Key="Owner",Value="Eeny-redo" \
     --runtime nodejs16.x --role $ARN \
-    --zip-file fileb://refill-function.zip \
+    --zip-file fileb://refillfunction.zip \
     --handler index.handler --output text `   
 
 # Create Lambda to recieve requests
