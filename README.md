@@ -73,8 +73,8 @@ aws lambda create-function --function-name Eeny-redo \
 # Create the SNS topic and tie endpoint to refill lambda
 SNS_ARN=`aws sns create-topic --name Eeny-redo-db-refill --output text --query 'TopicArn'`
 aws sns subscribe \
-    --topic-arn SNS_ARN --protocol lambda \
-    --notification-endpoint LAMBDA_ARN
+    --topic-arn $SNS_ARN --protocol lambda \
+    --notification-endpoint $LAMBDA_ARN
 
 # Give any API Gateway permission to invoke the Lambda
 aws lambda add-permission \
