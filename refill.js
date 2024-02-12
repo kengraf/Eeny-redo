@@ -3,6 +3,12 @@ const AWS = require("aws-sdk");
 const dynamo = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
+    let body;
+    let statusCode = 200;
+    const headers = {
+        "Content-Type": "application/json"
+    };
+    
     console.log('Received SNS event:', JSON.stringify(event, null, 2));
     
     // Define parameters for DynamoDB operation
