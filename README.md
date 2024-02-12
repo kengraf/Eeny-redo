@@ -60,7 +60,7 @@ LAMBDA_ARN=`aws lambda create-function --function-name Eeny-redo-db-refill \
     --tags Key="Owner",Value="Eeny-redo" \
     --runtime nodejs16.x --role $ARN \
     --zip-file fileb://refillfunction.zip \
-    --handler index.handler --output text `   
+    --handler index.handler --query FunctionArn --output text `   
 
 # Create Lambda to recieve requests
 zip function.zip -xi index.js
@@ -75,6 +75,14 @@ SNS_ARN=`aws sns create-topic --name Eeny-redo-db-refill --output text --query '
 aws sns subscribe \
     --topic-arn $SNS_ARN --protocol lambda \
     --notification-endpoint $LAMBDA_ARN
+
+# Give Lambda permission to be invoked by SNS
+aws lambda add-permission \
+    --function-name Eeny-redo-db-refill \
+    --statement-id sns-invoke \
+    --action "lambda:InvokeFunction" \
+    --principal sns.amazonaws.com \
+    --source-arn $SNS_ARN
 
 # Give any API Gateway permission to invoke the Lambda
 aws lambda add-permission \
