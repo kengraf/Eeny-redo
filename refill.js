@@ -13,7 +13,7 @@ exports.handler = async (event) => {
 
     try {
         // Put item in DynamoDB table
-        await dynamoDB.put(params).promise();
+        await dynamo.put(params).promise();
 
         return {
             statusCode: 200,
