@@ -55,9 +55,8 @@ ARN=`aws iam list-roles --output text \
     --query "Roles[?RoleName=='Eeny-redo-lambda'].Arn" `  
 
 # Creat lambda to re-fill database
-aws sns create-topic --name Eeny-redo-db-refill
 zip refill-function.zip -xi refill.js
-aws lambda create-function --function-name Eeny-redo-db-refill \
+LAMBDA_ARN=`aws lambda create-function --function-name Eeny-redo-db-refill \
     --tags Key="Owner",Value="Eeny-redo" \
     --runtime nodejs16.x --role $ARN \
     --zip-file fileb://refill-function.zip \
@@ -70,6 +69,12 @@ aws lambda create-function --function-name Eeny-redo \
     --runtime nodejs16.x --role $ARN \
     --zip-file fileb://function.zip --memory-size 512 \
     --handler index.handler --output text   
+
+# Create the SNS topic and tie endpoint to refill lambda
+SNS_ARN=`aws sns create-topic --name Eeny-redo-db-refill --output text --query 'TopicArn'`
+aws sns subscribe \
+    --topic-arn SNS_ARN --protocol lambda \
+    --notification-endpoint LAMBDA_ARN
 
 # Give any API Gateway permission to invoke the Lambda
 aws lambda add-permission \
