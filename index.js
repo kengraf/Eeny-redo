@@ -24,7 +24,7 @@ exports.handler =  async (event, context) => {
             Message: 'Hello from Lambda!',
             TopicArn: topic
           };
-          const data = await sns.publish(params).promise();
+          data = await sns.publish(params).promise();
           console.log("Message sent to SNS:", data.MessageId);
           body = "Game Over";
           break;
