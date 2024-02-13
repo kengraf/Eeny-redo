@@ -6,7 +6,7 @@ export let options = {
         ],
 };
 export default function() {
-        let res = http.get('https://rhwyu98e52.execute-api.us-east-2.amazonaws.com');
+        let res = http.get('https://eeny.cyber-unh.org');
         check(res, { 'status was 200': r => r.status == 200 });
         sleep(1);
 }
