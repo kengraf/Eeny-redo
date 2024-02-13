@@ -178,15 +178,13 @@ aws apigatewayv2 delete-api --api-id $APIID
 aws lambda delete-function --function-name Eeny-redo --output text
 aws lambda delete-function --function-name Eeny-redo-reload --output text
 TOPIC=`aws sns list-topics --output text --query \
-    'Topics[?contains(TopicArn, `Eeny-redo-reload`)].TopicArn' `
-aws sns delete-topic --topic-arn TOPIC
+    "Topics[?contains(TopicArn, 'Eeny-redo-reload')].TopicArn" `
+aws sns delete-topic --topic-arn $TOPIC
 
 # Delete DynamoDB table
 aws dynamodb delete-table --table-name Eeny-redo --output text
 
 # Delete Role and Policy
-aws iam detach-role-policy --role-name Eeny-redo-lambda \
-    --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
 aws iam delete-role-policy --role-name Eeny-redo-lambda \
     --policy-name Eeny-redo-lambda --output text
 aws iam delete-role --role-name Eeny-redo-lambda --output text  
