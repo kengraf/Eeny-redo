@@ -55,30 +55,34 @@ ARN=`aws iam list-roles --output text \
     --query "Roles[?RoleName=='Eeny-redo-lambda'].Arn" `  
 
 # Creat lambda to re-fill database
-zip refillfunction.zip -xi refill.js
-LAMBDA_ARN=`aws lambda create-function --function-name Eeny-redo-db-refill \
+cd lambda/reload
+zip reload.zip -xi index.mjs
+LAMBDA_ARN=`aws lambda create-function --function-name Eeny-redo-reload \
     --tags Key="Owner",Value="Eeny-redo" \
     --runtime nodejs16.x --role $ARN \
-    --zip-file fileb://refillfunction.zip \
+    --zip-file fileb://reload.zip \
     --handler index.handler --query FunctionArn --output text `   
+cd ../..
 
 # Create Lambda to recieve requests
-zip function.zip -xi index.js
+cd lambda/fetch
+zip fetch.zip -xi index.mjs
 aws lambda create-function --function-name Eeny-redo \
     --tags Key="Owner",Value="Eeny-redo" \
     --runtime nodejs16.x --role $ARN \
-    --zip-file fileb://function.zip --memory-size 512 \
+    --zip-file fileb://fetch.zip --memory-size 512 \
     --handler index.handler --output text   
+cd ../..
 
 # Create the SNS topic and tie endpoint to refill lambda
-SNS_ARN=`aws sns create-topic --name Eeny-redo-db-refill --output text --query 'TopicArn'`
+SNS_ARN=`aws sns create-topic --name Eeny-redo-reload --output text --query 'TopicArn'`
 aws sns subscribe \
     --topic-arn $SNS_ARN --protocol lambda \
     --notification-endpoint $LAMBDA_ARN
 
 # Give Lambda permission to be invoked by SNS
 aws lambda add-permission \
-    --function-name Eeny-redo-db-refill \
+    --function-name Eeny-redo-reload \
     --statement-id sns-invoke \
     --action "lambda:InvokeFunction" \
     --principal sns.amazonaws.com \
@@ -172,6 +176,10 @@ aws apigatewayv2 delete-api --api-id $APIID
 
 # Delete Lambda function
 aws lambda delete-function --function-name Eeny-redo --output text
+aws lambda delete-function --function-name Eeny-redo-reload --output text
+TOPIC=`aws sns list-topics --output text --query \
+    'Topics[?contains(TopicArn, `Eeny-redo-reload`)].TopicArn' `
+aws sns delete-topic --topic-arn TOPIC
 
 # Delete DynamoDB table
 aws dynamodb delete-table --table-name Eeny-redo --output text

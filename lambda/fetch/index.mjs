@@ -18,7 +18,7 @@ exports.handler =  async (event, context) => {
           const sns = new AWS.SNS();
           // Parameters for publishing a message to an SNS topic
           let data = await sns.listTopics().promise();
-          let topic = data.Topics.find(t => t.TopicArn.includes("Eeny-redo-db-refill"));
+          let topic = data.Topics.find(t => t.TopicArn.includes("Eeny-redo-reload"));
  
           let params = {
             Message: 'Hello from Lambda!',

@@ -22,6 +22,6 @@ done < items.txt
 ###  Automatically recover from failure
 The database needs to be refilled when empty
 The recovery process is:
-1) Eeny-redo-lambda invokes the SNS topic "Eeny-redo-db-refill" when zero records are returned
-2) The SNS topic invokes the lambda function: "Eeny-redo-db-refill"
+1) Eeny-redo-lambda invokes the SNS topic "Eeny-redo-reload" when zero records are returned
+2) The SNS topic invokes the lambda function: "Eeny-redo-reload"
 3) The lambda function refills the database.  The current lambda just adds a "Game Over" entry
