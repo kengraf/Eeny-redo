@@ -56,7 +56,7 @@ ARN=`aws iam list-roles --output text \
 
 # Creat lambda to re-fill database
 cd lambda/reload
-zip reload.zip -xi index.mjs
+zip reload.zip -xi index.js
 LAMBDA_ARN=`aws lambda create-function --function-name Eeny-redo-reload \
     --tags Key="Owner",Value="Eeny-redo" \
     --runtime nodejs16.x --role $ARN \
@@ -66,8 +66,8 @@ cd ../..
 
 # Create Lambda to recieve requests
 cd lambda/fetch
-zip fetch.zip -xi index.mjs
-aws lambda create-function --function-name Eeny-redo \
+zip fetch.zip -xi index.js
+aws lambda create-function --function-name Eeny-redo-fetch \
     --tags Key="Owner",Value="Eeny-redo" \
     --runtime nodejs16.x --role $ARN \
     --zip-file fileb://fetch.zip --memory-size 512 \
@@ -90,7 +90,7 @@ aws lambda add-permission \
 
 # Give any API Gateway permission to invoke the Lambda
 aws lambda add-permission \
-    --function-name Eeny-redo --output text \
+    --function-name Eeny-redo-fetch --output text \
     --action lambda:InvokeFunction \
     --statement-id AllowGateway \
     --principal apigateway.amazonaws.com  
@@ -99,7 +99,7 @@ aws lambda add-permission \
 ### API Gateway V2
 ```
 # Create the Gateway
-ARN=`aws lambda get-function --function-name Eeny-redo \
+ARN=`aws lambda get-function --function-name Eeny-redo-fetch \
     --query Configuration.FunctionArn --output text`
 aws apigatewayv2 create-api --name 'Eeny-redo' --protocol-type=HTTP \
     --tags Key="Owner",Value="Eeny-redo" \
