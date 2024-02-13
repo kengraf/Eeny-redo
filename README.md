@@ -175,7 +175,7 @@ APIID=`aws apigatewayv2 get-apis --output text \
 aws apigatewayv2 delete-api --api-id $APIID
 
 # Delete Lambda function
-aws lambda delete-function --function-name Eeny-redo --output text
+aws lambda delete-function --function-name Eeny-redo-fetch --output text
 aws lambda delete-function --function-name Eeny-redo-reload --output text
 TOPIC=`aws sns list-topics --output text --query \
     "Topics[?contains(TopicArn, 'Eeny-redo-reload')].TopicArn" `
