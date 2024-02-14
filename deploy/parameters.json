@@ -4,7 +4,7 @@
     "ParameterValue": "undefined-deploy"
   },
   {
-    "ParameterKey": "DomainName",
+    "ParameterKey": "DNS_Name",
     "ParameterValue": "cyber-unh.org"
   },
   {
