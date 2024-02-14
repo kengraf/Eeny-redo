@@ -13,7 +13,7 @@ exports.handler = async (event) => {
     
     // Define parameters for DynamoDB operation
     const params = {
-        TableName: 'Eeny-redo',
+        TableName: 'eeny-redo',
         Item: { name: "Game Over" }
     };
 
