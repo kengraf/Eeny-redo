@@ -170,13 +170,13 @@
     "CustomDomainCertificate": {
       "Type": "AWS::ACM::Certificate",
       "Properties": {
-        "DomainName": {"Fn::ImportValue" : {"Fn::Sub" : "*.${DomainName}"}}
+        "DomainName": {"Fn::Sub" : "*.${DomainName}"}
       }
     },
     "CustomDomain": {
       "Type": "AWS::ApiGatewayV2::DomainName",
       "Properties": {
-        "DomainName": {"Fn::ImportValue" : {"Fn::Sub" : "${DeployName}.${DomainName}."}},
+        "DomainName": {"Fn::Sub" : "${DeployName}.${DomainName}."},
         "DomainNameConfigurations": [
           {
             "CertificateArn": {
