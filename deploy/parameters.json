@@ -9,6 +9,6 @@
   },
   {
     "ParameterKey": "S3bucketName",
-    "ParameterValue": "undefind-bucket"
+    "ParameterValue": "undefined-bucket"
   }
 ]
