@@ -168,7 +168,7 @@
       }
     },
     "CustomDomainCertificate": {
-      "Type": "AWS::ACM::Certificate",
+      "Type": "AWS::CertificateManager::Certificate",
       "Properties": {
         "DomainName": {"Fn::Sub" : "wild.${DnsName}"}
       }
