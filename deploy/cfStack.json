@@ -2,7 +2,7 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Parameters" : {
       "S3bucketName" : { "Type" : "String" },
-      "DomainName" : { "Type" : "String" },
+      "DNS_Name" : { "Type" : "String" },
       "DeployName" : { "Type" : "String" }
   },
   "Resources": {
@@ -170,13 +170,13 @@
     "CustomDomainCertificate": {
       "Type": "AWS::ACM::Certificate",
       "Properties": {
-        "DomainName": {"Fn::Sub" : "*.${DomainName}"}
+        "DomainName": {"Fn::Sub" : "*.${DNS_Name}"}
       }
     },
     "CustomDomain": {
       "Type": "AWS::ApiGatewayV2::DomainName",
       "Properties": {
-        "DomainName": {"Fn::Sub" : "${DeployName}.${DomainName}."},
+        "DomainName": {"Fn::Sub" : "${DeployName}.${DNS_Name}."},
         "DomainNameConfigurations": [
           {
             "CertificateArn": {
@@ -205,7 +205,7 @@
         "HostedZoneId": "ZRWFREAU725TM",
         "RecordSets": [
           {
-            "Name": {"Fn::ImportValue" : {"Fn::Sub" : "${DeployName}.${DomainName}."}},
+            "Name": {"Fn::ImportValue" : {"Fn::Sub" : "${DeployName}.${DNS_Name}."}},
             "Type": "A",
             "AliasTarget": {
               "HostedZoneId": {
