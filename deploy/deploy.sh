@@ -18,11 +18,11 @@ echo "Creating stack..."
 
 # upload lambda functions
 cd lambda/fetch
-zip fetch.zip -ix index.js
+zip fetch.zip -xi index.js
 aws s3 cp fetch.zip s3://${S3BUCKET}/deploy/lambda/fetch.zip
 cd ../..
 cd lambda/reload
-zip reload.zip -ix index.js
+zip reload.zip -xi index.js
 aws s3 cp reload.zip s3://${S3BUCKET}/deploy/lambda/reload.zip
 cd ../..
 
