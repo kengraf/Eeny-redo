@@ -27,7 +27,6 @@ aws s3 cp reload.zip s3://${S3BUCKET}/deploy/lambda/reload.zip
 cd ../..
 
 # upload cf stack
-cd ../deploy
 aws cloudformation create-stack --stack-name ${STACK_NAME} --template-body file://cfStack.json --capabilities CAPABILITY_NAMED_IAM --parameters file://parameters.json --tags file://tags.json --output text
 
 echo "Waiting on ${STACK_NAME} create completion..."
