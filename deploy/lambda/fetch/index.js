@@ -12,13 +12,13 @@ exports.handler =  async (event, context) => {
   try {
     switch (event.rawPath) {
       case "/":
-        var result = await dynamo.scan ({ TableName: 'Eeny-redo', }).promise();
+        var result = await dynamo.scan ({ TableName: 'eeny-redo', }).promise();
         if (result.Count == 0) {
           // Publish message to the specified SNS topic
           const sns = new AWS.SNS();
           // Parameters for publishing a message to an SNS topic
           let data = await sns.listTopics().promise();
-          let topic = data.Topics.find(t => t.TopicArn.includes("Eeny-redo-reload"));
+          let topic = data.Topics.find(t => t.TopicArn.includes("eeny-redo-reload"));
  
           let params = {
             Message: 'Hello from Lambda!',
