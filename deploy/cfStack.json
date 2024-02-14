@@ -170,7 +170,7 @@
     "CustomDomainCertificate": {
       "Type": "AWS::CertificateManager::Certificate",
       "Properties": {
-        "DomainName": {"Fn::Sub" : "wild.${DnsName}"}
+        "DomainName": {"Fn::Sub" : "*.${DnsName}"}
       }
     },
     "CustomDomain": {
@@ -191,7 +191,7 @@
       "Type": "AWS::ApiGatewayV2::ApiMapping",
       "Properties": {
         "ApiId": {
-          "Fn::ImportValue" : {"Fn::Sub" : "${DeployName}-Api"} }
+          "Fn::ImportValue" : {"Fn::Sub" : "${DeployName}-Api"}
         },
         "DomainName": {
           "Ref": "CustomDomain"
@@ -227,3 +227,4 @@
       }
     }
   }
+}
