@@ -1,0 +1,225 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Resources": {
+    "EenyRedoLambdaRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "Eeny-redo-lambda",
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Eeny-redo"
+          }
+        ],
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "Eeny-redo-lambda",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": "dynamodb:*",
+                  "Resource": "*"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "EenyRedoTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "Eeny-redo",
+        "BillingMode": "PAY_PER_REQUEST",
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Eeny-redo"
+          }
+        ],
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "Name",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "Name",
+            "KeyType": "HASH"
+          }
+        ]
+      }
+    },
+    "EenyRedoReloadFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "Eeny-redo-reload",
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Eeny-redo"
+          }
+        ],
+        "Runtime": "nodejs16.x",
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "EenyRedoLambdaRole",
+            "Arn"
+          ]
+        },
+        "Code": {
+          "ZipFile": "(zip file contents here)"
+        }
+      }
+    },
+    "EenyRedoFetchFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "Eeny-redo-fetch",
+        "Tags": [
+          {
+            "Key": "Owner",
+            "Value": "Eeny-redo"
+          }
+        ],
+        "Runtime": "nodejs16.x",
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "EenyRedoLambdaRole",
+            "Arn"
+          ]
+        },
+        "Code": {
+          "ZipFile": "(zip file contents here)"
+        },
+        "MemorySize": 512
+      }
+    },
+    "EenyRedoSnsTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "DisplayName": "Eeny-redo-reload"
+      }
+    },
+    "EenyRedoSnsSubscription": {
+      "Type": "AWS::SNS::Subscription",
+      "Properties": {
+        "Protocol": "lambda",
+        "TopicArn": {
+          "Ref": "EenyRedoSnsTopic"
+        },
+        "Endpoint": {
+          "Fn::GetAtt": [
+            "EenyRedoReloadFunction",
+            "Arn"
+          ]
+        }
+      }
+    },
+    "EenyRedoApi": {
+      "Type": "AWS::ApiGatewayV2::Api",
+      "Properties": {
+        "Name": "Eeny-redo",
+        "ProtocolType": "HTTP",
+        "Target": {
+          "Fn::GetAtt": [
+            "EenyRedoFetchFunction",
+            "Arn"
+          ]
+        }
+      }
+    },
+    "EenyRedoIntegration": {
+      "Type": "AWS::ApiGatewayV2::Integration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "EenyRedoApi"
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::GetAtt": [
+            "EenyRedoFetchFunction",
+            "Arn"
+          ]
+        },
+        "PayloadFormatVersion": "1.0"
+      }
+    },
+    "CustomDomainCertificate": {
+      "Type": "AWS::ACM::Certificate",
+      "Properties": {
+        "DomainName": "*.cyber-unh.org"
+      }
+    },
+    "EenyRedoCustomDomain": {
+      "Type": "AWS::ApiGatewayV2::DomainName",
+      "Properties": {
+        "DomainName": "eeny.cyber-unh.org",
+        "DomainNameConfigurations": [
+          {
+            "CertificateArn": {
+              "Ref": "CustomDomainCertificate"
+            },
+            "EndpointType": "REGIONAL"
+          }
+        ]
+      }
+    },
+    "EenyRedoApiMapping": {
+      "Type": "AWS::ApiGatewayV2::ApiMapping",
+      "Properties": {
+        "ApiId": {
+          "Ref": "EenyRedoApi"
+        },
+        "DomainName": {
+          "Ref": "EenyRedoCustomDomain"
+        },
+        "Stage": "$default"
+      }
+    },
+    "Route53Record": {
+      "Type": "AWS::Route53::RecordSetGroup",
+      "Properties": {
+        "HostedZoneId": "ZRWFREAU725TM",
+        "RecordSets": [
+          {
+            "Name": "eeny2.cyber-unh.org.",
+            "Type": "A",
+            "AliasTarget": {
+              "HostedZoneId": {
+                "Fn::GetAtt": [
+                  "EenyRedoCustomDomain",
+                  "HostedZoneId"
+                ]
+              },
+              "DNSName": {
+                "Fn::GetAtt": [
+                  "EenyRedoCustomDomain",
+                  "ApiGatewayDomainName"
+                ]
+              },
+              "EvaluateTargetHealth": false
+            }
+          }
+        ]
+      }
+    }
+  }
+}
