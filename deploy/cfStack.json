@@ -155,7 +155,7 @@
       "Type": "AWS::ApiGatewayV2::Integration",
       "Properties": {
         "ApiId": {
-          "Ref": "RedoApi"
+          "Ref": "Api"
         },
         "IntegrationType": "AWS_PROXY",
         "IntegrationUri": {
