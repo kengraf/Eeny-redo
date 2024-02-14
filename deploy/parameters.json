@@ -1,0 +1,14 @@
+[
+  {
+    "ParameterKey": "DeployName",
+    "ParameterValue": "eeny-redo"
+  },
+  {
+    "ParameterKey": "DomainName",
+    "ParameterValue": "eeny-redo.cyber-unh.org"
+  },
+  {
+    "ParameterKey": "S3bucketName",
+    "ParameterValue": "bucket-random"
+  }
+]
