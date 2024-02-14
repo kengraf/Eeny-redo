@@ -5,7 +5,7 @@
   },
   {
     "ParameterKey": "DomainName",
-    "ParameterValue": "eeny-redo.cyber-unh.org"
+    "ParameterValue": "cyber-unh.org"
   },
   {
     "ParameterKey": "S3bucketName",
