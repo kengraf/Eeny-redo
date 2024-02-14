@@ -1,0 +1,21 @@
+{
+  "Parameters" : {
+    "Region" : "us-east2",
+    "AvailabilityZone" : "us-east2a",
+    "KeyName" : "ohio",
+    "AppName" : "eeny-redo"
+  },
+  "Tags" : {
+    "AppName" : "eeny-redo"
+  },
+  "StackPolicy" : {
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "NotAction" : "Update:Delete",
+        "Principal": "*",
+        "Resource" : "*"
+      }
+    ]
+  }
+}
