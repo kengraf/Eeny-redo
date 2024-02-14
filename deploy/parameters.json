@@ -1,7 +1,7 @@
 [
   {
     "ParameterKey": "DeployName",
-    "ParameterValue": "eeny-redo"
+    "ParameterValue": "undefined-deploy"
   },
   {
     "ParameterKey": "DomainName",
@@ -9,6 +9,6 @@
   },
   {
     "ParameterKey": "S3bucketName",
-    "ParameterValue": "bucket-random"
+    "ParameterValue": "undefind-bucket"
   }
 ]
