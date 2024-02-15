@@ -9,7 +9,7 @@
     "LambdaRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
-        "RoleName": "${DeployName}-lambda",
+        "RoleName": "${DeployName}lambda",
         "Tags": [
           {
             "Key": "Owner",
@@ -30,7 +30,7 @@
         },
         "Policies": [
           {
-            "PolicyName": "${DeployName}-lambda",
+            "PolicyName": "${DeployName}lambda",
             "PolicyDocument": {
               "Version": "2012-10-17",
               "Statement": [
@@ -154,9 +154,7 @@
     "Integration": {
       "Type": "AWS::ApiGatewayV2::Integration",
       "Properties": {
-        "ApiId": {
-          "Ref": "Api"
-        },
+        "ApiId": { "Ref": "Api" },
         "IntegrationType": "AWS_PROXY",
         "IntegrationUri": {
           "Fn::GetAtt": [
@@ -191,7 +189,7 @@
       "Type": "AWS::ApiGatewayV2::ApiMapping",
       "Properties": {
         "ApiId": {
-          "Fn::ImportValue" : {"Fn::Sub" : "${DeployName}-Api"}
+          "Ref" : "Api"
         },
         "DomainName": {
           "Ref": "CustomDomain"
