@@ -70,7 +70,7 @@
             "Arn"
           ]
         },
-        "Code":
+        "Code": {
           "S3Bucket": {"Fn::Sub" : "${S3bucketName}" },
           "S3Key": "reload.zip" 
         }
