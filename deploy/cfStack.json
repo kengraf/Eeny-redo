@@ -71,7 +71,7 @@
           ]
         },
         "Code": {
-          "ZipFile": "s3://${S3bucketName}/reload.zip"
+          "ZipFile": {"Fn::Sub" : "s3://${S3bucketName}/reload.zip" }
         }
       }
     },
@@ -88,7 +88,7 @@
           ]
         },
         "Code": {
-          "ZipFile": "s3://${S3bucketName}/fetch.zip"
+          "ZipFile": {"Fn::Sub" : "s3://${S3bucketName}/fetch.zip" }
         },
         "MemorySize": 512
       }
