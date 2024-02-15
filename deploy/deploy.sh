@@ -15,7 +15,7 @@ sed -ri "s/undefined-bucket/${S3BUCKET}/" parameters.json
 sed -ri "s/${STACK_NAME}-[0-9a-f]*/${S3BUCKET}/" parameters.json
 
 echo "Create S3 bucket..."
-aws s3api create-bucket --bucket  ${STACK_NAME} --region ${AWS_REGION}
+aws s3api create-bucket --bucket  ${S3BUCKET} --region ${AWS_REGION} --create-bucket-configuration LocationConstraint=${AWS_REGION}
 
 echo "Creating stack..."
 
@@ -35,4 +35,4 @@ STACK_ID=`aws cloudformation describe-stacks --stack-name ${STACK_NAME} --query 
 
 echo "Waiting on ${STACK_ID} create completion..."
 aws cloudformation wait stack-create-complete --stack-name ${STACK_ID}
-aws cloudformation describe-stacks --stack-name ${STACK_ID} jq .Stacks[0].Outputs
+aws cloudformation describe-stacks --stack-name ${STACK_ID} --query Outputs
