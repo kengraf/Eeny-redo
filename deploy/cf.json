@@ -57,43 +57,8 @@
           }
         ]
       }
-    },
-    "ReloadFunction": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "FunctionName": {"Fn::Sub" : "${DeployName}-reload"},
-        "Runtime": "nodejs16.x",
-        "Handler": "index.handler",
-        "Role": {
-          "Fn::GetAtt": [
-            "LambdaRole",
-            "Arn"
-          ]
-        },
-        "Code": {
-          "S3Bucket": {"Fn::Sub" : "${S3bucketName}" },
-          "S3Key": "reload.zip" 
-        }
-      }
-    },
-    "FetchFunction": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "FunctionName": {"Fn::Sub" : "${DeployName}-fetch"},
-        "Runtime": "nodejs16.x",
-        "Handler": "index.handler",
-        "Role": {
-          "Fn::GetAtt": [
-            "LambdaRole",
-            "Arn"
-          ]
-        },
-        "Code": {
-          "S3Bucket": {"Fn::Sub" : "${S3bucketName}" },
-          "S3Key": "fetch.zip"
-        },
-        "MemorySize": 512
-      }
     }
+
+    
   }
 }
