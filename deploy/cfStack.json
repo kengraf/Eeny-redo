@@ -89,7 +89,7 @@
           ]
         },
         "Code": {
-          "ZipFile": "s3://${S3bucketName}/deploy/lambda/reload.zip"
+          "ZipFile": "s3://${S3bucketName}/reload.zip"
         }
       }
     },
@@ -112,7 +112,7 @@
           ]
         },
         "Code": {
-          "ZipFile": "s3://${S3bucketName}/deploy/lambda/fetch.zip"
+          "ZipFile": "s3://${S3bucketName}/fetch.zip"
         },
         "MemorySize": 512
       }
