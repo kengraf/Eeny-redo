@@ -205,7 +205,7 @@
         "HostedZoneId": "ZRWFREAU725TM",
         "RecordSets": [
           {
-            "Name": {"Fn::ImportValue" : {"Fn::Sub" : "${DeployName}.${DnsName}."}},
+            "Name": {"Fn::Sub" : "${DeployName}.${DnsName}."},
             "Type": "A",
             "AliasTarget": {
               "HostedZoneId": {
