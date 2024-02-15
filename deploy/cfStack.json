@@ -146,7 +146,8 @@
     "CustomDomainCertificate": {
       "Type": "AWS::CertificateManager::Certificate",
       "Properties": {
-        "DomainName": {"Fn::Sub" : "*.${DnsName}"}
+        "DomainName": {"Fn::Sub" : "*.${DnsName}"},
+        "ValidationMethod":"DNS"
       }
     },
     "CustomDomain": {
