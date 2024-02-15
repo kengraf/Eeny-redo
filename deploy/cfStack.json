@@ -89,7 +89,8 @@
           ]
         },
         "Code": {
-          "ZipFile": {"Fn::Sub" : "s3://${S3bucketName}/fetch.zip" }
+          "S3Bucket": {"Fn::Sub" : "${S3bucketName}" },
+          "S3Key": "fetch.zip"
         },
         "MemorySize": 512
       }
