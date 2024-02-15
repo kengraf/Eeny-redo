@@ -141,7 +141,7 @@
     "Api": {
       "Type": "AWS::ApiGatewayV2::Api",
       "Properties": {
-        "Name": "${DeployName}",
+        "Name": "${DeployName}-Api",
         "ProtocolType": "HTTP",
         "Target": {
           "Fn::GetAtt": [
