@@ -179,16 +179,16 @@
     "Route53Record": {
       "Type": "AWS::Route53::RecordSetGroup",
       "Properties": {
-        "HostedZoneId": "ZRWFREAU725TM",
+        "HostedZoneName": {"Fn::Sub" : "${DnsName}."},
         "RecordSets": [
           {
             "Name": {"Fn::Sub" : "${DeployName}.${DnsName}."},
             "Type": "A",
             "AliasTarget": {
-              "HostedZoneId": {
+              "HostedZoneName": {
                 "Fn::GetAtt": [
                   "CustomDomain",
-                  "HostedZoneId"
+                  "DomainName"
                 ]
               },
               "DNSName": {
