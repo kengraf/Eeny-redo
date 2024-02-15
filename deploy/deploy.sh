@@ -8,8 +8,9 @@ if [ -z "$1" ]
     exit 1
 fi
 
+echo "Updating deploy name in config files to: ${STACK_NAME}"
+sed -ri "s/undefined-deploy/${STACK_NAME}/" tags.json
 sed -ri "s/undefined-deploy/${STACK_NAME}/" parameters.json
-
 S3BUCKET=$STACK_NAME-$(tr -dc a-f0-9 </dev/urandom | head -c 10)
 sed -ri "s/undefined-bucket/${S3BUCKET}/" parameters.json
 sed -ri "s/${STACK_NAME}-[0-9a-f]*/${S3BUCKET}/" parameters.json
@@ -28,7 +29,7 @@ cd ../..
 
 echo "Creating stack..."
 # upload cf stack
-STACK_ID=`aws cloudformation create-stack --stack-name ${STACK_NAME} --template-body file://cfStack.json --capabilities CAPABILITY_NAMED_IAM --parameters file://parameters.json --query "StackId" --output text`
+STACK_ID=`aws cloudformation create-stack --stack-name ${STACK_NAME} --template-body file://cfStack.json --capabilities CAPABILITY_NAMED_IAM --parameters file://parameters.json --tags file://tags.json --query "StackId" --output text`
 
 echo "Waiting on ${STACK_ID} create completion..."
 aws cloudformation wait stack-create-complete --stack-name ${STACK_ID}
