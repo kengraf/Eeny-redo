@@ -15,8 +15,7 @@ sed -ri "s/undefined-bucket/${S3BUCKET}/" parameters.json
 sed -ri "s/${STACK_NAME}-[0-9a-f]*/${S3BUCKET}/" parameters.json
 
 echo "Create S3 bucket..."
-REGION=`aws configure get region`
-aws s3api create-bucket --bucket  ${STACK_NAME} --region ${REGION}
+aws s3api create-bucket --bucket  ${STACK_NAME} --region ${AWS_REGION}
 
 echo "Creating stack..."
 
