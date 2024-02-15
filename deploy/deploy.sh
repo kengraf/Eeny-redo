@@ -28,9 +28,8 @@ cd ../..
 
 echo "Creating stack..."
 # upload cf stack
-aws cloudformation create-stack --stack-name ${STACK_NAME} --template-body file://cfStack.json --capabilities CAPABILITY_NAMED_IAM --parameters file://parameters.json --tags file://tags.json --output text
-STACK_ID=`aws cloudformation describe-stacks --stack-name ${STACK_NAME} --query "Stacks[0].StackId" --output text`
+STACK_ID=`aws cloudformation create-stack --stack-name ${STACK_NAME} --template-body file://cfStack.json --capabilities CAPABILITY_NAMED_IAM --parameters file://parameters.json --query "StackId" --output text`
 
 echo "Waiting on ${STACK_ID} create completion..."
 aws cloudformation wait stack-create-complete --stack-name ${STACK_ID}
-aws cloudformation describe-stacks --stack-name ${STACK_ID} --query Stacks[0].StackName --output text
+aws cloudformation describe-stacks --stack-name ${STACK_ID} --query "Stacks[0].StackName" --output text
