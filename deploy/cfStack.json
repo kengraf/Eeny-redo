@@ -153,7 +153,7 @@
     "CustomDomain": {
       "Type": "AWS::ApiGatewayV2::DomainName",
       "Properties": {
-        "DomainName": {"Fn::Sub" : "${DeployName}.${DnsName}."},
+        "DomainName": {"Fn::Sub" : "${DeployName}.${DnsName}"},
         "DomainNameConfigurations": [
           {
             "CertificateArn": {
