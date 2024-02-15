@@ -14,6 +14,10 @@ S3BUCKET=$STACK_NAME-$(tr -dc a-f0-9 </dev/urandom | head -c 10)
 sed -ri "s/undefined-bucket/${S3BUCKET}/" parameters.json
 sed -ri "s/${STACK_NAME}-[0-9a-f]*/${S3BUCKET}/" parameters.json
 
+echo "Create S3 bucket..."
+REGION=`aws configure get region`
+aws s3api create-bucket --bucket  ${STACK_NAME} --region ${REGION}
+
 echo "Creating stack..."
 
 # upload lambda functions
