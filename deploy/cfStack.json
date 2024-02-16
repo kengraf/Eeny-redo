@@ -171,7 +171,7 @@
         "DomainNameConfigurations": [
           {
             "CertificateArn": { "Ref": "CustomDomainCertificate" },
-            "SecurityPolicy": "TLS_1_2"
+            "SecurityPolicy": "TLS_1_2",
             "EndpointType": "REGIONAL"
           }         
         ]
