@@ -1,22 +1,8 @@
 #!/bin/bash
 
-# 
-echo $STACK_NAME
-echo ${STACK_NAME}
-exit 1
-
-if [ -z "$1" ]
-  then
-    echo "No STACK_NAME argument supplied"
-    exit 1
-fi
-
-echo "Updating deploy name in config files to: ${STACK_NAME}"
-sed -ri "s/undefined-deploy/${STACK_NAME}/" tags.json
-sed -ri "s/undefined-deploy/${STACK_NAME}/" parameters.json
-S3BUCKET=$STACK_NAME-$(tr -dc a-f0-9 </dev/urandom | head -c 10)
-sed -ri "s/undefined-bucket/${S3BUCKET}/" parameters.json
-sed -ri "s/${STACK_NAME}-[0-9a-f]*/${S3BUCKET}/" parameters.json
+# All the variables we need are in parameters.json
+STACK=`jq -r '.[] | select(.ParameterKey == "DeployName") | .ParameterValue' parameters.json`
+S3BUCKET=`jq -r '.[] | select(.ParameterKey == "S3bucketName") | .ParameterValue' parameters.json`
 
 echo "Load S3 bucket..."
 aws s3api create-bucket --bucket  ${S3BUCKET} --region ${AWS_REGION} --create-bucket-configuration LocationConstraint=${AWS_REGION}
