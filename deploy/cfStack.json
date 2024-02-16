@@ -157,65 +157,6 @@
         },
         "PayloadFormatVersion": "1.0"
       }
-    },
-    "CustomDomainCertificate": {
-      "Type": "AWS::CertificateManager::Certificate",
-      "Properties": {
-        "DomainName": {"Fn::Sub" : "${DnsName}"},
-        "ValidationMethod":"DNS"
-      }
-    },
-    "CustomDomain": {
-      "Type": "AWS::ApiGatewayV2::DomainName",
-      "Properties": {
-        "DomainNameConfigurations": [
-          {
-            "CertificateArn": { "Ref": "CustomDomainCertificate" },
-            "SecurityPolicy": "TLS_1_2",
-            "EndpointType": "REGIONAL"
-          }         
-        ],
-        "DomainName" : "eeny.cyber\-unh.org"
-      }
-    },
-    "ApiMapping": {
-      "Type": "AWS::ApiGatewayV2::ApiMapping",
-      "Properties": {
-        "ApiId": {
-          "Ref" : "Api"
-        },
-        "DomainName": {
-          "Ref": "CustomDomain"
-        },
-        "Stage": "$default"
-      }
-    },
-    "Route53Record": {
-      "Type": "AWS::Route53::RecordSetGroup",
-      "Properties": {
-        "HostedZoneName": {"Fn::Sub" : "${DnsName}."},
-        "RecordSets": [
-          {
-            "Name": {"Fn::Sub" : "${CustomSubdomainName}."},
-            "Type": "A",
-            "AliasTarget": {
-              "HostedZoneName": {
-                "Fn::GetAtt": [
-                  "CustomDomain",
-                  "DomainName"
-                ]
-              },
-              "DNSName": {
-                "Fn::GetAtt": [
-                  "CustomDomain",
-                  "ApiGatewayDomainName"
-                ]
-              },
-              "EvaluateTargetHealth": false
-            }
-          }
-        ]
-      }
     }
   }
 }
