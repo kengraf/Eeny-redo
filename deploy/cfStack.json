@@ -175,7 +175,7 @@
             "EndpointType": "REGIONAL"
           }         
         ],
-        "DomainName" : "",
+        "DomainName" : "example.com",
       }
     },
     "ApiMapping": {
