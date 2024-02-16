@@ -32,7 +32,7 @@ exports.handler =  async (event, context) => {
         var picked = Math.floor(Math.random() * result.Count);
         body = result.Items[picked].Name;
         await dynamo.delete({
-          TableName: "Eeny-redo",
+          TableName: "eeny-redo",
           Key: { Name: body },
           ReturnValues: 'ALL_OLD',
          })
