@@ -1,7 +1,7 @@
 [
   {
     "ParameterKey": "DeployName",
-    "ParameterValue": "undefined-deploy"
+    "ParameterValue": "eeny"
   },
   {
     "ParameterKey": "DnsName",
@@ -9,10 +9,10 @@
   },
   {
     "ParameterKey": "CustomDomainName",
-    "ParameterValue": "stack.cyber-unh.org"
+    "ParameterValue": "eeny.cyber-unh.org"
   },
   {
     "ParameterKey": "S3bucketName",
-    "ParameterValue": "undefined-bucket"
+    "ParameterValue": "eeny5-b8266bd713"
   }
 ]
