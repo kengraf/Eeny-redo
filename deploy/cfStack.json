@@ -4,7 +4,7 @@
       "S3bucketName" : { "Type" : "String" },
       "DnsName" : { "Type" : "String" },
       "DeployName" : { "Type" : "String" },
-      "CustomDomainName" : { "Type" : "String" }
+      "CustomSubdomainName" : { "Type" : "String" }
   },
   "Resources": {
     "LambdaRole": {
@@ -168,7 +168,7 @@
     "CustomDomain": {
       "Type": "AWS::ApiGatewayV2::DomainName",
       "Properties": {
-        "DomainName": { "Ref" : "CustomDomainName" },
+        "DomainName": { "Ref" : "CustomSubdomainName" },
         "DomainNameConfigurations": [
           {
             "CertificateArn": {
@@ -197,7 +197,7 @@
         "HostedZoneName": {"Fn::Sub" : "${DnsName}."},
         "RecordSets": [
           {
-            "Name": {"Fn::Sub" : "${DeployName}.${DnsName}."},
+            "Name": {"Fn::Sub" : "${CustomSubdomainName}."},
             "Type": "A",
             "AliasTarget": {
               "HostedZoneName": {
