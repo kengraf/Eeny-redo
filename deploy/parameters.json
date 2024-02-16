@@ -1,7 +1,7 @@
 [
   {
     "ParameterKey": "DeployName",
-    "ParameterValue": "eeny"
+    "ParameterValue": "eeny-redo"
   },
   {
     "ParameterKey": "DnsName",
@@ -9,7 +9,7 @@
   },
   {
     "ParameterKey": "CustomSubdomainName",
-    "ParameterValue": "eeny.cyber-unh.org"
+    "ParameterValue": "eeny-redo.cyber-unh.org"
   },
   {
     "ParameterKey": "S3bucketName",
