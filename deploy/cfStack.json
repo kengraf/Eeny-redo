@@ -168,14 +168,12 @@
     "CustomDomain": {
       "Type": "AWS::ApiGatewayV2::DomainName",
       "Properties": {
-        "DomainName": "eeny.cyber-unh.org",
         "DomainNameConfigurations": [
           {
-            "CertificateArn": {
-              "Ref": "CustomDomainCertificate"
-            },
+            "CertificateArn": { "Ref": "CustomDomainCertificate" },
+            "SecurityPolicy": "TLS_1_2"
             "EndpointType": "REGIONAL"
-          }
+          }         
         ]
       }
     },
