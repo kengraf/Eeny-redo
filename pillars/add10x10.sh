@@ -6,3 +6,4 @@ do
         sed 's/alice/'$i'/g' add10.json > new10.json
         aws dynamodb batch-write-item --request-items file://new10.json
 done
+rm new10.json
