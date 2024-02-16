@@ -161,7 +161,7 @@
     "CustomDomainCertificate": {
       "Type": "AWS::CertificateManager::Certificate",
       "Properties": {
-        "DomainName": {"Fn::Sub" : "*.${DnsName}"},
+        "DomainName": "*.cyber-unh.org",
         "ValidationMethod":"DNS"
       }
     },
