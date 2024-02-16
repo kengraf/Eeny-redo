@@ -34,7 +34,7 @@ done
 # The contents of add10.json
 ```
 {
-  "Eeny-redo": [
+  "eeny-redo": [
       { "PutRequest": { "Item": { "Name": { "S": "alice00" }}}},
       { "PutRequest": { "Item": { "Name": { "S": "alice01" }}}},
       { "PutRequest": { "Item": { "Name": { "S": "alice02" }}}},
