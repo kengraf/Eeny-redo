@@ -8,7 +8,7 @@
     "ParameterValue": "cyber-unh.org"
   },
   {
-    "ParameterKey": "CustomDomainName",
+    "ParameterKey": "CustomSubdomainName",
     "ParameterValue": "eeny.cyber-unh.org"
   },
   {
