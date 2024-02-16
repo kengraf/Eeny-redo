@@ -114,7 +114,7 @@ aws sns subscribe \
 
 # Give Lambda permission to be invoked by SNS
 aws lambda add-permission \
-    --function-name Eeny-redo-reload \
+    --function-name eeny-redo-reload \
     --statement-id sns-invoke \
     --action "lambda:InvokeFunction" \
     --principal sns.amazonaws.com \
@@ -122,7 +122,7 @@ aws lambda add-permission \
 
 # Give any API Gateway permission to invoke the Lambda
 aws lambda add-permission \
-    --function-name Eeny-redo-fetch --output text \
+    --function-name eeny-redo-fetch --output text \
     --action lambda:InvokeFunction \
     --statement-id AllowGateway \
     --principal apigateway.amazonaws.com  
@@ -133,13 +133,13 @@ aws lambda add-permission \
 # Create the Gateway
 ARN=`aws lambda get-function --function-name Eeny-redo-fetch \
     --query Configuration.FunctionArn --output text`
-aws apigatewayv2 create-api --name 'Eeny-redo' --protocol-type=HTTP \
-    --tags Key="Owner",Value="Eeny-redo" \
+aws apigatewayv2 create-api --name 'eeny-redo-Api' --protocol-type=HTTP \
+    --tags Key="Owner",Value="eeny-redo" \
     --target $ARN --output text
 
 # Create a GET method for a Lambda-proxy integration
 APIID=`aws apigatewayv2 get-apis --output text \
-    --query "Items[?Name=='Eeny-redo'].ApiId" `
+    --query "Items[?Name=='eeny-redo-Api'].ApiId" `
     
 aws apigatewayv2 create-integration --api-id $APIID \
     --integration-type AWS_PROXY --output text \
@@ -191,7 +191,7 @@ done
 Each refresh will return a different name.
 ```
 APIID=`aws apigatewayv2 get-apis --output text \
-    --query "Items[?Name=='Eeny-redo'].ApiId" `
+    --query "Items[?Name=='eeny-redo-Api'].ApiId" `
 curl -v https://$APIID.execute-api.us-east-2.amazonaws.com/
 
 ```
