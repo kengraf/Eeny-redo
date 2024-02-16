@@ -168,7 +168,7 @@
     "CustomDomain": {
       "Type": "AWS::ApiGatewayV2::DomainName",
       "Properties": {
-        "DomainName": { "Ref" : "CustomSubdomainName" },
+        "DomainName": "eeny.cyber-unh.org",
         "DomainNameConfigurations": [
           {
             "CertificateArn": {
