@@ -160,6 +160,7 @@
     },
     "LambdaSNSPermission": {
       "Type": "AWS::Lambda::Permission",
+      "DependsOn" : ["FetchFunction, ReloadFunction"],
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {"Fn::Sub" : "${DeployName}-reload"},
@@ -169,6 +170,7 @@
     },
     "LambdaAPIGatewayPermission": {
       "Type": "AWS::Lambda::Permission",
+      "DependsOn" : ["FetchFunction, ReloadFunction"],
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {"Fn::Sub" : "${DeployName}-fetch"},
