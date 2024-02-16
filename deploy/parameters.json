@@ -5,14 +5,14 @@
   },
   {
     "ParameterKey": "DnsName",
-    "ParameterValue": "cyber-unh.org"
+    "ParameterValue": "YOUR-DOMAIN-NAME"
   },
   {
     "ParameterKey": "CustomSubdomainName",
-    "ParameterValue": "eeny-redo.cyber-unh.org"
+    "ParameterValue": "eeny-redo.YOUR-DOMAIN-NAME"
   },
   {
     "ParameterKey": "S3bucketName",
-    "ParameterValue": "eeny5-b8266bd713"
+    "ParameterValue": "YOUR-BUCKET-NAME"
   }
 ]
