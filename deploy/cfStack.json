@@ -161,21 +161,21 @@
     "CustomDomainCertificate": {
       "Type": "AWS::CertificateManager::Certificate",
       "Properties": {
-        "DomainName": "*.cyber-unh.org",
+        "DomainName": {"Fn::Sub" : "${DnsName}"},
         "ValidationMethod":"DNS"
       }
     },
     "CustomDomain": {
       "Type": "AWS::ApiGatewayV2::DomainName",
       "Properties": {
-        "DomainName" : "eeny.cyber-unh.org",
         "DomainNameConfigurations": [
           {
             "CertificateArn": { "Ref": "CustomDomainCertificate" },
             "SecurityPolicy": "TLS_1_2",
             "EndpointType": "REGIONAL"
           }         
-        ]
+        ],
+        "DomainName" : "",
       }
     },
     "ApiMapping": {
