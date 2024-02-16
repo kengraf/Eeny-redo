@@ -1,6 +1,9 @@
 #!/bin/bash
 
-STACK_NAME=$1
+# 
+echo $STACK_NAME
+echo ${STACK_NAME}
+exit 1
 
 if [ -z "$1" ]
   then
@@ -15,7 +18,7 @@ S3BUCKET=$STACK_NAME-$(tr -dc a-f0-9 </dev/urandom | head -c 10)
 sed -ri "s/undefined-bucket/${S3BUCKET}/" parameters.json
 sed -ri "s/${STACK_NAME}-[0-9a-f]*/${S3BUCKET}/" parameters.json
 
-echo "Create and load S3 bucket..."
+echo "Load S3 bucket..."
 aws s3api create-bucket --bucket  ${S3BUCKET} --region ${AWS_REGION} --create-bucket-configuration LocationConstraint=${AWS_REGION}
 # upload lambda functions
 cd lambda/fetch
