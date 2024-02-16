@@ -3,7 +3,8 @@
   "Parameters" : {
       "S3bucketName" : { "Type" : "String" },
       "DnsName" : { "Type" : "String" },
-      "DeployName" : { "Type" : "String" }
+      "DeployName" : { "Type" : "String" },
+      "CustomDomainName" : { "Type" : "String" }
   },
   "Resources": {
     "LambdaRole": {
@@ -167,7 +168,7 @@
     "CustomDomain": {
       "Type": "AWS::ApiGatewayV2::DomainName",
       "Properties": {
-        "DomainName": "bb123.cyber-unh.org",
+        "DomainName": { "Ref" : "CustomDomainName" },
         "DomainNameConfigurations": [
           {
             "CertificateArn": {
