@@ -14,23 +14,16 @@ exports.handler = async (event) => {
     // Define parameters for DynamoDB operation
     const params = {
         TableName: 'eeny-redo',
-        Item: { name: "Game Over" }
+        Item: { Name: "Add more friends" }
     };
 
     try {
         // Put item in DynamoDB table
         await dynamo.put(params).promise();
 
-        return {
-            statusCode: 200,
-            body: JSON.stringify('Record added successfully')
-        };
-  } catch (err) {
-    statusCode = 400;
-    body = "Lambda error: " + JSON.stringify(err.message);
-  }
-  return {
-    statusCode,
-    body,
-  };
+        console.log('Record added successfully');
+        
+    } catch (err) {
+        console.log('Lambda error: ' + JSON.stringify(err.message));
+    }
 };
