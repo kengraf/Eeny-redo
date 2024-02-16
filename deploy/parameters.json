@@ -8,6 +8,10 @@
     "ParameterValue": "cyber-unh.org"
   },
   {
+    "ParameterKey": "CustomDomainName",
+    "ParameterValue": "stack.cyber-unh.org"
+  },
+  {
     "ParameterKey": "S3bucketName",
     "ParameterValue": "undefined-bucket"
   }
