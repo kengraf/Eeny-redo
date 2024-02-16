@@ -175,7 +175,7 @@
             "EndpointType": "REGIONAL"
           }         
         ],
-        "DomainName" : "eeny.cyberunh.org"
+        "DomainName" : "eeny.cyber\-unh.org"
       }
     },
     "ApiMapping": {
