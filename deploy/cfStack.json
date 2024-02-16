@@ -157,6 +157,25 @@
         },
         "PayloadFormatVersion": "1.0"
       }
+    },
+    "LambdaSNSPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {"Fn::Sub" : "${DeployName}-reload"},
+        "Principal": "sns.amazonaws.com",
+        "SourceArn": { "Ref": "SnsTopic" },
+        "StatementId": "sns-invoke"
+      }
+    },
+    "LambdaAPIGatewayPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {"Fn::Sub" : "${DeployName}-fetch"},
+        "Principal": "apigateway.amazonaws.com",
+        "StatementId": "AllowGateway"
+      }
     }
   }
 }
