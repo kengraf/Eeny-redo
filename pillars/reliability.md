@@ -1,4 +1,4 @@
-# Two suggestions to support Reliability pillar in Eeny-meeny-miny-moe app
+# Two suggestions to support Reliability pillar
 1) Test recovery procedures
 2) Automatically recover from failure
         
