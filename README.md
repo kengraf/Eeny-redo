@@ -17,9 +17,9 @@ cd Eeny-redo
 ```
 cd deploy
 # Change 'eeny-redo' to your app name
-sed -ri 's/eeny-redo/<YOUR-APP-NAM>/g' parameters.json
-sed -ri 's/eeny-redo/<YOUR-APP-NAM>/g' lambda/fetch/index.js
-sed -ri 's/eeny-redo/<YOUR-APP-NAM>/g' lambda/reload/index.js
+sed -ri "s/eeny-redo/<YOUR-APP-NAM>/g" parameters.json
+sed -ri "s/eeny-redo/<YOUR-APP-NAM>/g" lambda/fetch/index.js
+sed -ri "s/eeny-redo/<YOUR-APP-NAM>/g" lambda/reload/index.js
 ```
 
 In parameters.json change the S3 bucket entry to the bucket you want to hold the lambda zip files.
@@ -58,14 +58,14 @@ AWS CLI requires files for packages, roles, and policies.  The example here assu
 
 ```
 # Create role for Lambda function
-aws iam create-role --role-name Eeny-redo-lambda \
-    --tags "Key"="Owner","Value"="Eeny-redo" \
+aws iam create-role --role-name eeny-redo-lambda \
+    --tags "Key"="Owner","Value"="eeny-redo" \
     --assume-role-policy-document file://lambda-role.json \
     --output text
   
 # Attach policy for DynamoDB access to role
-aws iam put-role-policy --role-name Eeny-redo-lambda \
-    --policy-name Eeny-redo-lambda --output text \
+aws iam put-role-policy --role-name eeny-redo-lambda \
+    --policy-name eeny-redo-lambda --output text \
     --policy-document file://lambda-policy.json  
 
 ```
@@ -74,8 +74,8 @@ aws iam put-role-policy --role-name Eeny-redo-lambda \
 Create a new table named *eeny-redo*
 ```
 aws dynamodb create-table \
-    --table-name Eeny-redo --output text \
-    --tags "Key"="Owner","Value"="Eeny-redo" \
+    --table-name eeny-redo --output text \
+    --tags "Key"="Owner","Value"="eeny-redo" \
     --attribute-definitions AttributeName=Name,AttributeType=S  \
     --key-schema AttributeName=Name,KeyType=HASH  \
     --billing-mode PAY_PER_REQUEST  
@@ -84,13 +84,13 @@ aws dynamodb create-table \
 ### Lambda: used to select a friend
 ```
 ARN=`aws iam list-roles --output text \
-    --query "Roles[?RoleName=='Eeny-redo-lambda'].Arn" `  
+    --query "Roles[?RoleName=='eeny-redo-lambda'].Arn" `  
 
 # Creat lambda to re-fill database
 cd lambda/reload
 zip reload.zip -xi index.js
-LAMBDA_ARN=`aws lambda create-function --function-name Eeny-redo-reload \
-    --tags Key="Owner",Value="Eeny-redo" \
+LAMBDA_ARN=`aws lambda create-function --function-name eeny-redo-reload \
+    --tags Key="Owner",Value="eeny-redo" \
     --runtime nodejs16.x --role $ARN \
     --zip-file fileb://reload.zip \
     --handler index.handler --query FunctionArn --output text `   
@@ -99,15 +99,15 @@ cd ../..
 # Create Lambda to recieve requests
 cd lambda/fetch
 zip fetch.zip -xi index.js
-aws lambda create-function --function-name Eeny-redo-fetch \
-    --tags Key="Owner",Value="Eeny-redo" \
+aws lambda create-function --function-name eeny-redo-fetch \
+    --tags Key="Owner",Value="eeny-redo" \
     --runtime nodejs16.x --role $ARN \
     --zip-file fileb://fetch.zip --memory-size 512 \
     --handler index.handler --output text   
 cd ../..
 
 # Create the SNS topic and tie endpoint to refill lambda
-SNS_ARN=`aws sns create-topic --name Eeny-redo-reload --output text --query 'TopicArn'`
+SNS_ARN=`aws sns create-topic --name eeny-redo-reload --output text --query 'TopicArn'`
 aws sns subscribe \
     --topic-arn $SNS_ARN --protocol lambda \
     --notification-endpoint $LAMBDA_ARN
@@ -131,7 +131,7 @@ aws lambda add-permission \
 ### API Gateway V2
 ```
 # Create the Gateway
-ARN=`aws lambda get-function --function-name Eeny-redo-fetch \
+ARN=`aws lambda get-function --function-name eeny-redo-fetch \
     --query Configuration.FunctionArn --output text`
 aws apigatewayv2 create-api --name 'eeny-redo-Api' --protocol-type=HTTP \
     --tags Key="Owner",Value="eeny-redo" \
@@ -143,7 +143,7 @@ APIID=`aws apigatewayv2 get-apis --output text \
     
 aws apigatewayv2 create-integration --api-id $APIID \
     --integration-type AWS_PROXY --output text \
-    --integration-uri arn:aws:lambda:us-east-2:788715698479:function:Eeny-redo \
+    --integration-uri arn:aws:lambda:us-east-2:788715698479:function:eeny-redo-fetch \
     --payload-format-version 1.0
 ```
 
@@ -170,7 +170,7 @@ aws route53 change-resource-record-sets \
     --hosted-zone-id $ZONEID --change-batch '{
       "Changes": [ { "Action": "UPSERT",
           "ResourceRecordSet": {
-            "Name": "eeny2.cyber-unh.org.", "Type": "A",
+            "Name": "eeny.cyber-unh.org.", "Type": "A",
             "AliasTarget": { "HostedZoneId": "'$HOSTZONE'",
                 "DNSName": "'$DNSNAME'", "EvaluateTargetHealth": false } } } ] }'  
 
@@ -183,7 +183,7 @@ friends=("Alice" "Bob" "Charlie")
 for i in "${friends[@]}"
 do
    : 
-  aws dynamodb put-item --table-name Eeny-redo --item \
+  aws dynamodb put-item --table-name eeny-redo --item \
     '{ "Name": {"S": "'$i'"} }' 
 done
 
@@ -206,23 +206,23 @@ aws apigatewayv2 delete-api-mapping \
     --api-mapping-id $MAPID --domain-name eeny.cyber-unh.org
 
 APIID=`aws apigatewayv2 get-apis --output text \
-    --query "Items[?Name=='Eeny-redo'].ApiId" `
+    --query "Items[?Name=='eeny-redo-Api'].ApiId" `
 aws apigatewayv2 delete-api --api-id $APIID
 
 # Delete Lambda function
-aws lambda delete-function --function-name Eeny-redo-fetch --output text
-aws lambda delete-function --function-name Eeny-redo-reload --output text
+aws lambda delete-function --function-name eeny-redo-fetch --output text
+aws lambda delete-function --function-name eeny-redo-reload --output text
 TOPIC=`aws sns list-topics --output text --query \
-    "Topics[?contains(TopicArn, 'Eeny-redo-reload')].TopicArn" `
+    "Topics[?contains(TopicArn, 'eeny-redo-reload')].TopicArn" `
 aws sns delete-topic --topic-arn $TOPIC
 
 # Delete DynamoDB table
-aws dynamodb delete-table --table-name Eeny-redo --output text
+aws dynamodb delete-table --table-name eeny-redo --output text
 
 # Delete Role and Policy
-aws iam delete-role-policy --role-name Eeny-redo-lambda \
-    --policy-name Eeny-redo-lambda --output text
-aws iam delete-role --role-name Eeny-redo-lambda --output text  
+aws iam delete-role-policy --role-name eeny-redo-lambda \
+    --policy-name eeny-redo-lambda --output text
+aws iam delete-role --role-name eeny-redo-lambda --output text  
   
 ```
 ---
