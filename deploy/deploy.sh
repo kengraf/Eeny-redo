@@ -4,10 +4,7 @@
 STACK=`jq -r '.[] | select(.ParameterKey == "DeployName") | .ParameterValue' parameters.json`
 S3BUCKET=`jq -r '.[] | select(.ParameterKey == "S3bucketName") | .ParameterValue' parameters.json`
 
-echo "Load S3 bucket..."
-aws s3api create-bucket --bucket  ${S3BUCKET} --region ${AWS_REGION} \
-  --create-bucket-configuration LocationConstraint=${AWS_REGION}
-# upload lambda functions
+echo "Load lambdas to S3 bucket..."
 cd lambda/fetch
 zip fetch.zip -xi index.js
 aws s3 cp fetch.zip s3://${S3BUCKET}/fetch.zip
@@ -20,7 +17,7 @@ echo "Creating stack..."
 # upload cf stack
 STACK_ID=`aws cloudformation create-stack --stack-name ${STACK} \
   --template-body file://cfStack.json --capabilities CAPABILITY_NAMED_IAM \
-  --parameters file://parameters.json --tags Key=DeployName Value=${STACK} \
+  --parameters file://parameters.json --tags Key=DeployName,Value=${STACK} \
     --query "StackId" --output text`
 
 echo "Waiting on ${STACK_ID} create completion..."
