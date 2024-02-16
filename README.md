@@ -1,7 +1,7 @@
 # Eeny-redo
 
 This is a fork of kengraf/eeny-meeny-miny-moe.  
-This repo demonstrates some of the simple things that can be implemented to to improve the overall architecture of the original repo.
+This repo demonstrates some of the simple things that can be implemented to improve the overall architecture of the original repo.
 The improvements are motivated by AWS's Well-Architected service.  Details of each improvement are in the pillars folder.
 
 An example CloudFormation template and deploy script are provided, or you use the aws cli command listed below.
@@ -17,14 +17,14 @@ cd Eeny-redo
 ```
 cd deploy
 # Change 'eeny-redo' to your app name
-sed -ri "s/eeny-redo/<YOUR-APP-NAM>/g" parameters.json
-sed -ri "s/eeny-redo/<YOUR-APP-NAM>/g" lambda/fetch/index.js
-sed -ri "s/eeny-redo/<YOUR-APP-NAM>/g" lambda/reload/index.js
+find . -type f  -exec sed -i 's/eeny-redo/<YOUR-APP-NAME/g' {} \;
 ```
 
-In parameters.json change the S3 bucket entry to the bucket you want to hold the lambda zip files.
+In parameters.json change
+- The S3 bucket entry to the bucket you want to hold the lambda zip files.
+- The domain name to your domain.
 
-Package up the lambdas and deploy the CloudFormation template
+Package up the lambdas and deploy the CloudFormation template.
 ```
 chmod +x deploy.sh
 ./deploy.sh
@@ -33,8 +33,8 @@ chmod +x deploy.sh
 A bug/feature when attempting to defined a "AWS::ApiGatewayV2::DomainName" resource.
 
 The DomainName property below is required but, all attempted values return a schema read only error.
-AWS recommands creating a lambda based custom resource as a workaround.
-Which is alot of work just to have a friendly URL for a short term project.  
+AWS recommends creating a lambda based custom resource as a workaround.
+Which is a lot of work just to have a friendly URL for a short-term project.  
 If friendly URL is desired the CLI commands below can be used.
 ```
     "CustomDomain": {
@@ -54,7 +54,7 @@ If friendly URL is desired the CLI commands below can be used.
 ---
 ## Create eeny-redo app using AWS CLI
 ### IAM create roles and policies
-AWS CLI requires files for packages, roles, and policies.  The example here assumes you have cloned this Github repo and are in the proper working directory
+AWS CLI requires files for packages, roles, and policies.  The example here assumes you have cloned this Github repo and are in the proper working directory.
 
 ```
 # Create role for Lambda function
@@ -96,7 +96,7 @@ LAMBDA_ARN=`aws lambda create-function --function-name eeny-redo-reload \
     --handler index.handler --query FunctionArn --output text `   
 cd ../..
 
-# Create Lambda to recieve requests
+# Create Lambda to receive requests
 cd lambda/fetch
 zip fetch.zip -xi index.js
 aws lambda create-function --function-name eeny-redo-fetch \
@@ -227,4 +227,4 @@ aws iam delete-role --role-name eeny-redo-lambda --output text
 ```
 ---
 ## Summary
-There are still many unimplemented suggestions from the original repo.  This effort is to help the learning process, so maybe some day.  Review the content in the pillars folder to see what was done in this fork.
+There are still many unimplemented suggestions from the original repo.  This effort is to help the learning process, so maybe someday.  Review the content in the pillars folder to see what was done in this fork.
