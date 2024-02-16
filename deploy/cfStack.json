@@ -164,8 +164,7 @@
         "Action": "lambda:InvokeFunction",
         "FunctionName": {"Fn::Sub" : "${DeployName}-reload"},
         "Principal": "sns.amazonaws.com",
-        "SourceArn": { "Ref": "SnsTopic" },
-        "StatementId": "sns-invoke"
+        "SourceArn": { "Ref": "SnsTopic" }
       }
     },
     "LambdaAPIGatewayPermission": {
@@ -173,8 +172,7 @@
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {"Fn::Sub" : "${DeployName}-fetch"},
-        "Principal": "apigateway.amazonaws.com",
-        "StatementId": "AllowGateway"
+        "Principal": "apigateway.amazonaws.com"
       }
     }
   }
