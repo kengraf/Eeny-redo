@@ -3,13 +3,13 @@
 2) Adjust deployment code
         
 ## Project costs for 1M daily user requests
-Used AWS Pricw  Estimator for costs
+Used AWS Price Estimator for costs
 
 ### DynamoDB
 1 GB x 0.25 USD = 0.25 USD (Data storage cost)  
 DynamoDB data storage cost (monthly): 0.25 USD  
 
-Number of writes: 750 million per month  1M users * 30 days * 25 names in list  
+Number of writes: 750 million per month for 1M users * 30 days * 25 names in list  
 Pricing calculations  
 1 KB average item size / 1 KB = 1.00 unrounded write request units needed per item  
 750,000,000.00 total write request units x 0.00000125 USD = 937.50 USD write request cost  
