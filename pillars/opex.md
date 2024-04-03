@@ -28,7 +28,7 @@ Monitoring and performance tuning are still done by hand via the console UI.
 
 *Set a consistent ApiGateway URL to facilitate testing when deployment change*
 The default creation gives us something like: 
-https://<YOUR API ID>.execute-api.<REGION>.amazonaws.com/
+https://\<YOUR API ID\>.execute-api.\<REGION\>.amazonaws.com/
 The move apigatewayv2 allows for custom domains like:
 https://eeny.cyber-unh.org/ which is independent of deployment generated ids.
 See caveat note in README.md for CloudFormation limitations.
