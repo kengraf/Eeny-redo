@@ -4,7 +4,7 @@
         
 ## Measure overall efficiency
 Add a load generation process to eval response times.  
-Good stress testing recommendations  [here](https://www.inmotionhosting.com/support/server/server-usage/how-to-stress-test-your-website/).  
+Good stress testing recommendations [here](https://www.inmotionhosting.com/support/server/server-usage/how-to-stress-test-your-website/).  
 The example uses K6.
  
 K6 install on AWS Linux
