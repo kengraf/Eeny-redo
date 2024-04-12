@@ -20,6 +20,7 @@ the array of names was removed.  Names are now provided only at script runtime.
 **In transit:** Remote access to the API Gateway is only available using TLS.  Realtime
 access to the components in this app are available to properly authorized users via the console
 and CLI, introspection of transactions is possible for those users.
+
 ---
 ## Implement multi-layered API security
 [AWS Well-Architected Security Workshop](https://catalog.workshops.aws/well-architected-security/en-US/4-infrastructure-protection/multilayered-api-security-with-cognito-and-waf)
