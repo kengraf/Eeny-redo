@@ -53,7 +53,7 @@ def create_eventbridge_rule(rule_name, topic_arn):
 def main():
     topic_name = "AWSHealthNotifications"
     rule_name = "AWSHealthDynamoDBAlerts"
-    email = "your-email@example.com"  # Change to your email
+    email = "kmh722@unh.edu"
     
     print("Creating SNS topic...")
     topic_arn = create_sns_topic(topic_name)
