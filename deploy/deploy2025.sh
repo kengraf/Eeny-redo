@@ -1,9 +1,16 @@
 #!/bin/bash
 
 STACK=Eeny2025
-S3BUCKET=eeny5-b8266bd713
+S3BUCKET=eeny5-2025
 REGION=us-west-2
 
+if aws s3api head-bucket --bucket "$S3BUCKET" --region ${REGION} 2>/dev/null; then
+  echo "Bucket '$S3BUCKET' exists."
+else
+  echo "Creating bucket '$S3BUCKET'."
+  aws s3api create-bucket --bucket ${S3BUCKET} --region ${REGION}
+fi
+    
 echo "Load lambdas to S3 bucket..."
 pushd lambda/fetch2025
 zip fetch.zip -xi index.py
