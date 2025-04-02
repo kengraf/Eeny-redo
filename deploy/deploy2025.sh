@@ -1,20 +1,20 @@
 #!/bin/bash
 
-# All the variables we need are in parameters.json
 STACK=Eeny2025
-S3BUCKET=Eeny-redo
+S3BUCKET=eeny5-b8266bd713
+REGION=us-west-2
 
 echo "Load lambdas to S3 bucket..."
-cd lambda/fetch2025
+pushd lambda/fetch2025
 zip fetch.zip -xi index.py
-aws s3 cp fetch2025.zip s3://${S3BUCKET}/fetch.zip
-cd ../..
+aws s3 cp fetch2025.zip s3://${S3BUCKET}
+popd
 
 echo "Creating stack..."
 # upload cf stack
 STACK_ID=`aws cloudformation deploy --stack-name ${STACK} \
-  --template-body file://cfStack.json --capabilities CAPABILITY_NAMED_IAM \
-  --parameters file://parameters.json --tags Key=DeployName,Value=${STACK} \
-    --query "StackId" --output text`
+  --template-body file://cfStack2025.json --capabilities CAPABILITY_NAMED_IAM \
+  --tags Key=DeployName,Value=${STACK} \
+  --region ${REGION} --query "StackId" --output text`
 
-aws cloudformation describe-stacks --stack-name ${STACK_ID} --query "Stacks[0].StackName" --output text
+aws cloudformation list-exports --query "Exports[?Name=='EENY2025_URL'].Value" --output text
